@@ -7,17 +7,16 @@ private:
 
  public:
     virtual void action() const = 0;
-    Cell(/* args */);
-    ~Cell();
+    virtual ~Cell() = default;  
 };
 
-Cell::Cell(/* args */)
-{
-}
+class Property : public Cell {
+    std::string name;
+    int price;
+public:
+    Property(const std::string& name, int price) : name(name), price(price) {};
 
-Cell::~Cell()
-{
-}
+};
 
 
 class Player
