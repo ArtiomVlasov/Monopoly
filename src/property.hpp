@@ -1,5 +1,5 @@
 #include "cell.hpp"
-#include "player.hpp"
+#include "classes.hpp"
 #include <string>
 #include <iostream>
 
@@ -10,10 +10,11 @@ private:
     int price;
     int rent;
     Player owner;
-    
 public:
-    Property(std::string Name, int Price, int Rent, Player& player);
-    void onLand() override{}
+    Property(std::string Name, int Price, int Rent);
+    void applyEffect(Player &player);
+    void onLand() override;
+    void startAuction(Property &property);
     virtual void buy();// устанавливает владельца и списывает деньги
     virtual void payRent() = 0; // платишь ренту
     virtual void getRent() const = 0; 
