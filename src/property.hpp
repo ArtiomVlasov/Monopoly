@@ -1,7 +1,8 @@
 #include "cell.hpp"
-#include "classes.hpp"
 #include <string>
 #include <iostream>
+
+class Player;
 
 class Property : public Cell
 {

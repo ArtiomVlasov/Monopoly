@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
-#include "classes.hpp"
+
+class Property;
 
 class Player
 {
