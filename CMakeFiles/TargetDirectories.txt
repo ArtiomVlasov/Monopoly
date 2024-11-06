@@ -1,0 +1,4 @@
+/home/archi/coding/CppLabWorks/CMakeFiles/corelib.dir
+/home/archi/coding/CppLabWorks/CMakeFiles/nsuoop-cpp-template-lab2.dir
+/home/archi/coding/CppLabWorks/CMakeFiles/edit_cache.dir
+/home/archi/coding/CppLabWorks/CMakeFiles/rebuild_cache.dir
