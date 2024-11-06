@@ -1,8 +1,7 @@
 #include<string>
 #include<list>
 
-class Cell
-{
+class Cell {
 private:
 
  public:
