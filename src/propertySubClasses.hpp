@@ -29,7 +29,7 @@ public:
 class Street : public Property
 {
 private:
-    enum Color
+    enum class Color
     {
         brown,
         turquoise,
@@ -49,8 +49,9 @@ protected:
 
 public:
     Street(CellType type, std::string name, int price, int rent, Color color);
-    void buildNewHouse(Street &street);
+    void buildNewHouse();
     bool CanBuildHouse(Player &player);
-    void demolishHouse(Street &street);
+    void demolishHouse();
+    int getLevelOfStreet();
     ~Street();
 };
