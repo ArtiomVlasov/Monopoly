@@ -22,7 +22,7 @@ public:
     void defaultAction(Player &player) override;
     void onLand() override;
     void startAuction(Property &property);
-    virtual void buy();                   // устанавливает владельца и списывает деньги
+    void buy();                   // устанавливает владельца и списывает деньги
     virtual void payRent(Player &player); // платишь ренту
     virtual void getRent(Player &player) const = 0;
     virtual bool isOwned() const;
