@@ -11,18 +11,27 @@ private:
     int price;
     int rent;
     Player owner;
+
+protected:
+    int virtual calculateRent();
+    int virtual calculateMortgage();
+    int virtual calculateUnMortgage();
+
 public:
-    Property(std::string Name, int Price, int Rent);
-    void applyEffect(Player &player);
+    Property(CellType type,std::string Name, int Price, int Rent);
+    void defaultAction(Player &player) override;
     void onLand() override;
     void startAuction(Property &property);
-    virtual void buy();// устанавливает владельца и списывает деньги
-    virtual void payRent() = 0; // платишь ренту
-    virtual void getRent() const = 0; 
-    virtual bool isOwned() const = 0;
-    virtual Player *getOwner() const = 0;
-    virtual void mortgage() = 0; //заложить дом
-    virtual void unMortgage() = 0;// выкупить
-    virtual void getPrice() const = 0;
+    virtual void buy();                   // устанавливает владельца и списывает деньги
+    virtual void payRent(Player &player); // платишь ренту
+    virtual void getRent(Player &player) const = 0;
+    virtual bool isOwned() const;
+    virtual Player *getOwner() const;
+    virtual void mortgage();   // заложить недвижимость
+    virtual void unMortgage(); // выкупить
+    virtual int getPrice() const;
+    virtual bool isFullListOfProperty(Player& player, CellType type) = 0;
+    virtual int getAmountOfRent() const;
+    int virtual getAmountOfMortgage() const;
     ~Property();
 };
