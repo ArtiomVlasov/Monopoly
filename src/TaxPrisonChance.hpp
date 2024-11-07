@@ -9,32 +9,32 @@ private:
 
 public:
     void onLand() override;
-    Tax(const int tax);
+    Tax(CellType type, const int tax);
     int getTaxAmount() const;
-    void applyEffect(Player &player) override;
+    void defaultAction(Player &player) override;
     ~Tax();
 };
 
-class Prison : Cell
+class Prison : public Cell
 {
 private:
-    const int callDowm;
+    const int callDown;
     const int jailFee;
 
 public:
-    Prison();
+    Prison(CellType type);
     void onLand() override;
-    void applyEffect(Player &player) override; // отправить в тюрьму
+    void defaultAction(Player &player) override; // отправить в тюрьму
     ~Prison();
 };
 
 class Chance : public Cell
 {
-public:
-    Chance();
-    void applyEffect(Player &player) override;
-
 private:
-    std::vector<std::function<void(Player &)>> effects; 
-    void initializeEffects();                           
+    std::vector<std::function<void(Player &)>> effects;
+    void initializeEffects();
+
+public:
+    Chance(CellType type);
+    void defaultAction(Player &player) override;
 };
