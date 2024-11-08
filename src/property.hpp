@@ -20,7 +20,6 @@ protected:
 public:
     Property(CellType type,std::string Name, int Price, int Rent);
     void defaultAction(Player &player) override;
-    void onLand() override;
     void startAuction(Property &property);
     void buy();                   // устанавливает владельца и списывает деньги
     virtual void payRent(Player &player); // платишь ренту
