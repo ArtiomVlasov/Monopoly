@@ -15,7 +15,7 @@ private:
     uint8_t numMovesInPrison;
 
 public:
-    Player(std::string name);
+      Player(std::string name);
     Player();
     void setInJael(bool flag);
     void makeMove(int steps);
@@ -27,9 +27,11 @@ public:
     void unmortgagedProperty(Property *property);
     int getBalance() const;
     void setBalance(int price);
+    CellType getCellTypeInListOfProperty(int index);
     std::string getName() const;
     int getPosition() const;
     const std::vector<Property *> &getProperties() const;
+    int getQuantityOfProperty();
     bool isBankrupt() const;
     bool isInJail() const;
     void sendToJail();
