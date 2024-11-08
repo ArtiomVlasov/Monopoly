@@ -12,4 +12,5 @@ public:
     CellType getType() const;
     virtual void defaultAction(Player &player) = 0;
     virtual ~Cell() = default;
+    bool isEmpty();
 };
