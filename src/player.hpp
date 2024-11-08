@@ -17,6 +17,7 @@ private:
     std::vector<Property> listOfProperty;
 public:
     Player(std::string name);
+    Player();
     void makeMove(int steps);
     void addProperty(Property &property);
     void pay(int amount);
