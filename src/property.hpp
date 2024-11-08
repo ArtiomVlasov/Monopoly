@@ -26,7 +26,9 @@ public:
     virtual void payRent(Player &player); // платишь ренту
     virtual void getRent(Player &player) const = 0;
     virtual bool isOwned() const;
-    virtual Player *getOwner() const;
+        virtual Player *getOwner() {
+        return &owner;
+    }
     virtual void mortgage();   // заложить недвижимость
     virtual void unMortgage(); // выкупить
     virtual int getPrice() const;
