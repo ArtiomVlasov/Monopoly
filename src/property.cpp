@@ -37,3 +37,13 @@ void Property::unMortgage(Player &player) {
         this->owner = player;
     }
 }
+
+bool Property::isFullListOfProperty(Player& player, CellType type, PropertyType proptype) {
+    int countQuantityPropertys = 0;
+    for (int index = 0; index < player.getQuantityOfProperty(); index++) {
+        if (player.getCellTypeInListOfProperty(index) == type) {
+            countQuantityPropertys++;
+        }
+    }
+    return countQuantityPropertys == handleCellType(proptype);
+}
