@@ -1,10 +1,7 @@
 #include <string>
 #include <vector>
 
-
 class Property;
-
-class Street;
 
 class Player
 {
@@ -12,29 +9,34 @@ private:
     std::string name;
     int balance;
     int position;
+    std::vector<Property> listOfProperty;
     bool inJael;
     bool bankrupt;
-    std::vector<Property> listOfProperty;
+    uint8_t numMovesInPrison;
+
 public:
     Player(std::string name);
     Player();
+    void setInJael(bool flag);
     void makeMove(int steps);
-    void addProperty(Property &property);
+    void addProperty(Property *property);
     void pay(int amount);
     void receive(int amount);
     bool canAfford(int amount) const;
-    void mortgageProperty(Property &property);
-    void unmortgagedProperty(Property &property);
+    void mortgageProperty(Property *property);
+    void unmortgagedProperty(Property *property);
     int getBalance() const;
+    void setBalance(int price);
     std::string getName() const;
     int getPosition() const;
-    const std::vector<Property> &getProperties() const;
+    const std::vector<Property *> &getProperties() const;
     bool isBankrupt() const;
     bool isInJail() const;
     void sendToJail();
     void releaseFromJail();
-    bool canBuildOn(Property &property) const;
-    void buildStructure(Street &property); 
-    void destroyStructure(Street &property);   
+    bool canBuildOn(Property *property) const;
+    void buildStructure(Property *property);   
+    int getNumMovesInPrison();
+    void setNumMovesInPrison(int num);
     ~Player();
 };
