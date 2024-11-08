@@ -63,3 +63,17 @@ bool Property::isFullListOfProperty(Player& player, CellType type, PropertyType 
     }
     return countQuantityPropertys == handleCellType(proptype);
 }
+
+
+int Property::getAmountOfRent() const {
+    return this->rent;
+}
+
+int Property::getAmountOfMortgage() const {
+    return 0; // ????
+}
+
+
+Property:: ~Property() {
+
+}
