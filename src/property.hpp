@@ -32,7 +32,7 @@ public:
     virtual void mortgage();   // заложить недвижимость
     virtual void unMortgage(); // выкупить
     virtual int getPrice() const;
-    virtual bool isFullListOfProperty(Player& player, CellType type) = 0;
+    virtual bool isFullListOfProperty(Player& player, CellType type, PropertyType proptype) = 0;
     virtual int getAmountOfRent() const;
     int virtual getAmountOfMortgage() const;
     ~Property();
