@@ -17,7 +17,7 @@ void Property::defaultAction(Player &player)  {
     }
 }
 
-void Property::startAction(Property& property) {
+void Property::startAuction(Property& property) {
     
 }
 

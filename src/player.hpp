@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <cstdint>
 
 class Property;
 
@@ -9,13 +10,14 @@ private:
     std::string name;
     int balance;
     int position;
-    std::vector<Property> listOfProperty;
-    bool inJael;
+    std::vector<Property *> listOfProperty;
+    bool inJail;
     bool bankrupt;
+    int sumPriceOfProperty;
     uint8_t numMovesInPrison;
 
 public:
-      Player(std::string name);
+    Player(std::string name);
     Player();
     void setInJael(bool flag);
     void makeMove(int steps);
@@ -27,6 +29,7 @@ public:
     void unmortgagedProperty(Property *property);
     int getBalance() const;
     void setBalance(int price);
+    void buy(Property &property);
     CellType getCellTypeInListOfProperty(int index);
     std::string getName() const;
     int getPosition() const;
@@ -37,8 +40,11 @@ public:
     void sendToJail();
     void releaseFromJail();
     bool canBuildOn(Property *property) const;
-    void buildStructure(Property *property);   
+    void buildStructure(Street *property);
+    void destroyStructure(Street& street);
     int getNumMovesInPrison();
-    void setNumMovesInPrison(int num);
+    void incrementNumMovesInPrison();
+    void declareBankruptcy();
+    int makeDecision();
     ~Player();
 };

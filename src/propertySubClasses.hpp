@@ -29,17 +29,6 @@ public:
 class Street : public Property
 {
 private:
-    enum class Color
-    {
-        brown,
-        turquoise,
-        pink,
-        orange,
-        red,
-        yellow,
-        green,
-        blue
-    };
     int level;
 
 protected:
@@ -48,7 +37,7 @@ protected:
     int calculateUnMortgage() override;
 
 public:
-    Street(CellType type, std::string name, int price, int rent, Color color);
+    Street(CellType type, std::string name, int price, int rent, PropertyType color);
     void buildNewHouse();
     bool CanBuildHouse(Player &player);
     void demolishHouse();
