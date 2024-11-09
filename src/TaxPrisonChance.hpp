@@ -9,7 +9,7 @@ private:
 
 public:
     void onLand() override;
-    Tax(CellType type, const int tax);
+    Tax(const int tax);
     int getTaxAmount() const;
     void defaultAction(Player &player) override;
     ~Tax();
@@ -22,9 +22,11 @@ private:
     const int jailFee;
 
 public:
-    Prison(CellType type);
+    Prison();
     void onLand() override;
     void defaultAction(Player &player) override; // отправить в тюрьму
+    int getJailFee() const;
+    void payToExit(Player& player);
     ~Prison();
 };
 
