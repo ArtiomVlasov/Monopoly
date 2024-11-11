@@ -1,4 +1,4 @@
-#include "player.hpp"
+#include <game.hpp>
 
 enum class CellType { Property, Chance, Tax, Prison, Street, Railway, Utilities, publicTreasury};
 enum class PropertyType { // надо подумать можно ли как-то еще это реализовать
