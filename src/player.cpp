@@ -2,8 +2,12 @@
 #include <propertySubClasses.hpp>
 #include <cell.hpp>
 
-
 Player::Player(std::string name) : name(name), balance(2000), position(0), inJail(false), bankrupt(false), numMovesInPrison(0), listOfProperty() {}
+
+int Player::getTotalPriceOfProperty()
+{
+    return totalPriceOfProperty;
+}
 
 void Player::makeMove(int steps)
 {
@@ -22,6 +26,8 @@ void Player::receive(int amount)
 
 void Player::addProperty(Property *property)
 {
+    totalPriceOfProperty += property->calculateMortgage();
+    property->setOwner(*this);
     listOfProperty.push_back(property);
 }
 
@@ -29,14 +35,37 @@ bool Player::canAfford(int amount) const
 {
     if (amount > balance)
     {
-        return false;
+        if (amount > balance + totalPriceOfProperty)
+        {
+            return false;
+        }
+        else {} // нужно вернуть какое то сообщение о том что необходи продать имущество чтобы заплатить
     }
     return true;
 }
 
-void Player::declareBankruptcy()
+void Player::declareBankruptcy(Player *creditor)
 {
     bankrupt = true;
+
+    if (creditor)
+    {
+        for (Property *property : listOfProperty)
+        {
+            property->setOwner(*creditor);
+            creditor->addProperty(property);
+        }
+        creditor->receive(balance);
+    }
+    else
+    {
+        for (Property *property : listOfProperty)
+        {
+            property->markAsAvailable();
+        }
+    }
+    listOfProperty.clear();
+    balance = 0;
 }
 
 /*void Player::mortgageProperty(Property& property){
@@ -121,4 +150,80 @@ void Player::incrementNumMovesInPrison()
 int Player::getNumMovesInPrison()
 {
     return numMovesInPrison;
+}
+
+int Player::makeBid(int currentHighestBid)
+{
+    int bid;
+    std::cin >> bid; // не знаю наверно верно
+    if (bid == -1)
+    {
+        return -1;
+    }
+
+    if (bid > currentHighestBid)
+    {
+        return bid;
+    }
+    else
+    {
+
+        return makeBid(currentHighestBid);
+    }
+}
+
+int Player::makeDecision()
+{
+    int decision;
+    std::cin >> decision;
+    return decision;
+}
+
+void Player::startAuction(Property *property, const std::vector<Player *> &players)
+{
+    int highestBid = 0;
+    Player *highestBidder = nullptr;
+
+    bool auctionActive = true;
+    while (auctionActive)
+    {
+        auctionActive = false;
+
+        for (Player *player : players)
+        {
+            if (player != this)
+            {
+                int bid = player->makeBid(highestBid);
+
+                if (bid > highestBid && player->canAfford(bid))
+                {
+                    highestBid = bid;
+                    highestBidder = player;
+                    auctionActive = true;
+                }
+                else if (bid == -1)
+                {
+                    //???????????????
+                }
+            }
+        }
+    }
+    if (highestBidder)
+    {
+        highestBidder->pay(highestBid);
+        highestBidder->addProperty(property);
+    }
+    else
+    {
+        //???????????????
+    }
+}
+
+void Player::buy(Property &property)
+{
+    pay(property.getPrice());
+
+    property.setOwner(*this);
+
+    listOfProperty.push_back(&property);
 }

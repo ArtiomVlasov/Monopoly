@@ -13,7 +13,7 @@ private:
     std::vector<Property *> listOfProperty;
     bool inJail;
     bool bankrupt;
-    int sumPriceOfProperty;
+    int totalPriceOfProperty;
     uint8_t numMovesInPrison;
 
 public:
@@ -28,6 +28,7 @@ public:
     void mortgageProperty(Property *property);
     void unmortgagedProperty(Property *property);
     int getBalance() const;
+    int getTotalPriceOfProperty();
     void setBalance(int price);
     void buy(Property &property);
     CellType getCellTypeInListOfProperty(int index);
@@ -44,7 +45,9 @@ public:
     void destroyStructure(Street& street);
     int getNumMovesInPrison();
     void incrementNumMovesInPrison();
-    void declareBankruptcy();
+    void declareBankruptcy(Player* creditor = nullptr);
     int makeDecision();
+    void startAuction(Property* property, const std::vector<Player*>& players);
+    int makeBid(int currentHighestBid);
     ~Player();
 };
