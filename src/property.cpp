@@ -1,79 +1,122 @@
 #include "property.hpp"
 #include "cell.hpp"
-#include "board.hpp"
+#include <game.hpp>
 
-Property::Property(CellType type, std::string Name, int Price, int Rent, Player owner) 
-    : name(Name), price(Price), rent(Rent), type(type), owner(owner) {}
+Property::Property(CellType type, std::string Name, int Price, int Rent, Player owner)
+    : Cell(type), name(Name), price(Price), rent(Rent), owner(owner), isMortgage(false) {}
 
-void Property::defaultAction(Player &player)  {
-    Cell* c = Board::getCell(player.getPosition());
-    if (player.isInJail() && player.getNumMovesInPrison() == 3) {
-        player.setNumMovesInPrison(0);
-        player.setInJael(false);  
-    } else if (!player.isBankrupt() && (Property::isOwned()) && (owner.getName() != player.getName())){ // если player попал на какую-то не свою клетку
+void Property::defaultAction(Player &player, Game& game)
+{
+    if (player.getName() != owner.getName() && (isMortgage == false))
+    {
         payRent(player);
-    } else if (c->getType() == CellType::publicTreasury) {
-        //тут пикают карту и чет делают (это когда общ казна) 
+    }
+    else if(player.getName() != owner.getName() && (isMortgage == true)){
+        //ничего не платит
+    }
+    else if (!player.canAfford(price))
+    {
+        player.startAuction(this, game.getListOfPlayers());
+        return;
+    }
+    int ans = player.makeDecision();
+    switch (ans)
+    {
+    case 0: // может купить
+        player.buy(*this);
+        // player.buy()
+    case 1: // акуцион
+        player.startAuction(this, game.getListOfPlayers());
+        return;
     }
 }
 
-void Property::startAuction(Property& property) {
-    
+void Property::setOwner(Player &newOwner)
+{
+    owner = newOwner;
 }
 
-void Property::buy(Player &player) {
-    this->owner = player;
-    player.setBalance(this->rent);
+bool Property::isMortgaged()
+{
+    return isMortgage;
 }
 
-void Property::payRent(Player &player) {
-    player.setBalance(getAmountOfRent());
+void Property::markAsAvailable(){
+    isMortgage = false;
+    owner = Player();
 }
 
-int Property::getRent() {
+void Property::payRent(Player &player)
+{
+    int amount = calculateRent(player);
+    if (player.canAfford(amount))
+    {
+        player.pay(amount);
+        owner.receive(amount);
+    }
+    else
+    {
+        player.declareBankruptcy(&owner);
+    }
+}
+
+int Property::getRent() const
+{
     return this->rent;
 }
 
-bool Property::isOwned() {
+bool Property::isOwned()
+{
     return !this->name.empty();
 }
 
-int Property::getPrice() const {
+int Property::getPrice() const
+{
     return this->price;
 }
 
-void Property::mortgage() {
+std::string Property::getName() const{
+    return name;
+}
+
+void Property::mortgage()
+{
     this->owner.setBalance(this->owner.getBalance() * 1.1);
     this->owner = Player();
 }
 
-void Property::unMortgage(Player &player) {
-    if(!player.isInJail() && !player.isBankrupt() && player.getBalance() == price*1.1) {
+void Property::unMortgage(Player &player)
+{
+    if (!player.isInJail() && !player.isBankrupt() && player.getBalance() == price * 1.1)
+    {
         player.setBalance(player.getBalance() - this->price * 1.1);
         this->owner = player;
     }
 }
 
-bool Property::isFullListOfProperty(Player& player, CellType type, PropertyType proptype) {
+bool Property::isFullListOfProperty(Player &player, CellType type, PropertyType proptype)
+{
     int countQuantityPropertys = 0;
-    for (int index = 0; index < player.getQuantityOfProperty(); index++) {
-        if (player.getCellTypeInListOfProperty(index) == type) {
+    for (int index = 0; index < player.getQuantityOfProperty(); index++)
+    {
+        if (player.getCellTypeInListOfProperty(index) == type)
+        {
             countQuantityPropertys++;
         }
     }
     return countQuantityPropertys == handleCellType(proptype);
 }
 
-
-int Property::getAmountOfRent() const {
+int Property::getAmountOfRent() const
+{
     return this->rent;
 }
 
-int Property::getAmountOfMortgage() const {
+int Property::getAmountOfMortgage() const
+{
     return 0; // ????
 }
 
-
-Property:: ~Property() {
-
+Property::~Property()
+{
 }
