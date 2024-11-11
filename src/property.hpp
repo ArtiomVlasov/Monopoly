@@ -1,5 +1,6 @@
 #include "cell.hpp"
 #include <string>
+#include <game.hpp>
 #include <iostream>
 
 class Player;
@@ -11,26 +12,30 @@ private:
     int price;
     int rent;
     Player owner;
+    bool isMortgage;
 
 protected:
-    int virtual calculateRent();
-    int virtual calculateMortgage();
-    int virtual calculateUnMortgage();
+    int virtual calculateRent(Player &player);
+    
 
 public:
     Property(CellType type,std::string Name, int Price, int Rent, Player owner);
-    void defaultAction(Player &player) override;
-    void startAuction(Property &property);
-    void buy(Player &player);                   // устанавливает владельца и списывает деньги
+    void defaultAction(Player &player, Game& game) override;
     virtual void payRent(Player &player); // платишь ренту
-    virtual void getRent(Player &player) const = 0;
+    int getRent() const;
     virtual bool isOwned();
         virtual Player *getOwner() {
         return &owner;
     }
+    int virtual calculateMortgage();
+    int virtual calculateUnMortgage();
+    void setOwner(Player& newOwner);
     virtual void mortgage();   // заложить недвижимость
     virtual void unMortgage(Player &player); // выкупить
+    void markAsAvailable();
+    bool isMortgaged();
     virtual int getPrice() const;
+    std::string getName() const
     virtual bool isFullListOfProperty(Player& player, CellType type, PropertyType proptype) = 0;
     virtual int getAmountOfRent() const;
     int virtual getAmountOfMortgage() const;
