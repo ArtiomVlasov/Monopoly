@@ -8,7 +8,7 @@ void Tax::onLand()
     std::cout << " You have stepped on the tax square. You must pay tax to the treasury " << std::endl;
 }
 
-void Tax::defaultAction(Player &player)
+void Tax::defaultAction(Player &player, Game& game)
 {
     if (player.canAfford(tax))
     {
@@ -18,7 +18,7 @@ void Tax::defaultAction(Player &player)
     else
     {
         std::cout << player.getName() << " cannot afford the tax and will go bankrupt." << std::endl;
-        player.declareBankruptcy();
+        player.declareBankruptcy(); //
     }
 }
 
@@ -34,7 +34,7 @@ void Prison::onLand()
     std::cout << " ......... " << callDown << " ......." << std::endl;
 }
 
-void Prison::defaultAction(Player &player)
+void Prison::defaultAction(Player &player, Game& game)
 {
     player.sendToJail();
     std::cout << player.getName() << " .......... " << std::endl;

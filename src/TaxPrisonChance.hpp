@@ -1,6 +1,6 @@
 #include "cell.hpp"
-#include "player.hpp"
 #include <functional>
+#include <game.hpp>
 
 class Tax : public Cell
 {
@@ -11,7 +11,7 @@ public:
     void onLand() override;
     Tax(const int tax);
     int getTaxAmount() const;
-    void defaultAction(Player &player) override;
+    void defaultAction(Player &player, Game& game) override;
     ~Tax();
 };
 
@@ -24,7 +24,7 @@ private:
 public:
     Prison();
     void onLand() override;
-    void defaultAction(Player &player) override; // отправить в тюрьму
+    void defaultAction(Player &player, Game& game) override; // отправить в тюрьму
     int getJailFee() const;
     void payToExit(Player& player);
     ~Prison();
@@ -38,5 +38,5 @@ private:
 
 public:
     Chance(CellType type);
-    void defaultAction(Player &player) override;
+    void defaultAction(Player &player, Game& game) override;
 };

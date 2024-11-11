@@ -3,26 +3,25 @@
 class Railway : public Property
 {
 protected:
-    int calculateRent() override;
-    int calculateMortgage() override;
-    int calculateUnMortgage() override;
+    int calculateRent(Player& player) override;
+    
 
 public:
     Railway(CellType type ,std::string name, int price, int rent); // : Property(name, price, rent){}
-    void getRent(Player &player) const override;
+    int calculateMortgage() override;
+    int calculateUnMortgage() override;
     ~Railway();
 };
 
 class Utilities : public Property
 {
 protected:
-    int calculateRent() override;
-    int calculateMortgage() override;
-    int calculateUnMortgage() override;
+    int calculateRent(Player& player) override;
 
 public:
     Utilities(CellType Type,std::string name, int price, int rent); //: Property(name, price, rent){}
-    void getRent(Player &player) const override;
+    int calculateMortgage() override;
+    int calculateUnMortgage() override;
     ~Utilities();
 };
 
@@ -32,12 +31,12 @@ private:
     int level;
 
 protected:
-    int calculateRent() override;
-    int calculateMortgage() override;
-    int calculateUnMortgage() override;
+    int calculateRent(Player& player) override;
 
 public:
     Street(CellType type, std::string name, int price, int rent, PropertyType color);
+    int calculateMortgage() override;
+    int calculateUnMortgage() override;
     void buildNewHouse();
     bool CanBuildHouse(Player &player);
     void demolishHouse();
