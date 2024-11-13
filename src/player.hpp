@@ -1,7 +1,10 @@
+
 #include <string>
 #include <vector>
 #include <cstdint>
 
+
+class Street;
 class Property;
 
 class Player
@@ -31,7 +34,7 @@ public:
     int getTotalPriceOfProperty();
     void setBalance(int price);
     void buy(Property &property);
-    CellType getCellTypeInListOfProperty(int index);
+    //CellType getCellTypeInListOfProperty(int index);
     std::string getName() const;
     int getPosition() const;
     const std::vector<Property *> &getProperties() const;
@@ -48,6 +51,5 @@ public:
     void declareBankruptcy(Player* creditor = nullptr);
     int makeDecision();
     void startAuction(Property* property, const std::vector<Player*>& players);
-    int makeBid(int currentHighestBid);
     ~Player();
 };

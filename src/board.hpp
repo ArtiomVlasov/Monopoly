@@ -1,6 +1,7 @@
 #include <vector>
 #include <memory>
-#include <cell.hpp>
+
+class Cell;
 
 class Board {
 private:

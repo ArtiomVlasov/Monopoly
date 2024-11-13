@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "Cell.hpp"
-#include "Player.hpp"
+#include "cell.hpp"
+#include "player.hpp"
 #include "property.hpp"
 #include <vector>
 #include <string>
@@ -31,7 +31,7 @@ loop1:
         players[index] = &Player(name);
     }
     std::cout << "Let's see who will start the game first" << std::endl;
-
+}
 class Render
 {
     public:

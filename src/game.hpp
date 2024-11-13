@@ -1,7 +1,8 @@
 #include <vector>
 #include <memory>
-#include <player.hpp>
-#include <board.hpp>
+#include "board.hpp"
+
+class Player;
 
 class Game {
 public:
