@@ -8,8 +8,6 @@ protected:
 
 public:
     Railway(CellType type ,std::string name, int price, int rent); // : Property(name, price, rent){}
-    int calculateMortgage() override;
-    int calculateUnMortgage() override;
     ~Railway();
 };
 
@@ -20,8 +18,6 @@ protected:
 
 public:
     Utilities(CellType Type,std::string name, int price, int rent); //: Property(name, price, rent){}
-    int calculateMortgage() override;
-    int calculateUnMortgage() override;
     ~Utilities();
 };
 
@@ -35,8 +31,7 @@ protected:
 
 public:
     Street(CellType type, std::string name, int price, int rent, CellType color);
-    int calculateMortgage() override;
-    int calculateUnMortgage() override;
+    int getBuildingCost();
     void buildNewHouse();
     bool CanBuildHouse(Player &player);
     void demolishHouse();
