@@ -35,8 +35,6 @@ public:
     bool isMortgaged();
     virtual int getPrice() const;
     std::string getName() const;
-    virtual bool isFullListOfProperty(Player* player, CellType type, CellType proptype) = 0;
-    virtual int getAmountOfRent() const;
-    int virtual getAmountOfMortgage() const;
+    virtual bool isFullListOfProperty(Player *player, CellType type);
     ~Property();
 };
