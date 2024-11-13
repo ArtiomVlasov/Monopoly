@@ -6,7 +6,7 @@ CellType Cell::getType() const {
     return type;
 }
 
-int handleCellType(CellType propertyType) {
+int Cell::handleCellType(CellType propertyType) {
     switch (propertyType) {
         case CellType::RedStreet:
             return 3;
