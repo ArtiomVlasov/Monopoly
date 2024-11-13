@@ -20,21 +20,26 @@ private:
     uint8_t numMovesInPrison;
 
 public:
+    enum AffordStatus {
+        CAN_AFFORD,        
+        NEED_TO_SELL_PROPERTY, 
+        CANNOT_AFFORD
+    };
+    
     Player(std::string name);
     Player();
-    void setInJael(bool flag);
+    void setInJael(bool flag); //????????????????????????
     void makeMove(int steps);
     void addProperty(Property *property);
     void pay(int amount);
     void receive(int amount);
-    bool canAfford(int amount) const;
+    AffordStatus canAfford(int amount);
     void mortgageProperty(Property *property);
     void unmortgagedProperty(Property *property);
     int getBalance() const;
     int getTotalPriceOfProperty();
-    void setBalance(int price);
-    void buy(Property &property);
-    //CellType getCellTypeInListOfProperty(int index);
+    void buy(Property *property);
+    CellType getCellTypeInListOfProperty(int index);
     std::string getName() const;
     int getPosition() const;
     const std::vector<Property *> &getProperties() const;
@@ -45,7 +50,7 @@ public:
     void releaseFromJail();
     bool canBuildOn(Property *property) const;
     void buildStructure(Street *property);
-    void destroyStructure(Street& street);
+    void destroyStructure(Street* street);
     int getNumMovesInPrison();
     void incrementNumMovesInPrison();
     void declareBankruptcy(Player* creditor = nullptr);
