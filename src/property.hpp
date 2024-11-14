@@ -14,7 +14,7 @@ private:
     bool isMortgage;
 
 protected:
-    int virtual calculateRent(Player *player);
+    int virtual calculateRent(Player *player) = 0;
     
 
 public:
