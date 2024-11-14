@@ -35,8 +35,23 @@ class Chance : public Cell
 private:
     std::vector<std::function<void(Player *)>> effects;
     void initializeEffects();
+    Game* game;
 
 public:
-    Chance(CellType type);
+    Chance(Game *game);
+    void initializeEffects(Game *game);
     void defaultAction(Player *player, Game* game) override;
 };
+
+
+class PublicTreasury : public Cell {
+public:
+    void onLand() override;
+    void defaultAction(Player* player, Game* game) override; 
+    ~PublicTreasury();
+
+private:
+    std::vector<std::function<void(Player*)>> actions;
+    PublicTreasury();
+    void initializeActions();
+};  
