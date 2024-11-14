@@ -11,6 +11,6 @@ public:
     Cell* getCell(int position) const;
     int getNextPosition(int currentPosition, int roll) const;
     void addCell(std::shared_ptr<Cell> cell);
-    
+    const std::vector<std::unique_ptr<Cell>>& getAllCells() const;
 
 };
