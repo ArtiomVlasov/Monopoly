@@ -36,5 +36,6 @@ public:
     virtual int getPrice() const;
     std::string getName() const;
     virtual bool isFullListOfProperty(Player *player, CellType type);
+    bool isStreet();
     ~Property();
 };

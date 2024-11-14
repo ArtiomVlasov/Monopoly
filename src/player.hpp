@@ -6,6 +6,7 @@
 
 class Street;
 class Property;
+class Game;
 
 class Player
 {
@@ -30,6 +31,7 @@ public:
     Player();
     void setInJael(bool flag); //????????????????????????
     void makeMove(int steps);
+    void setPosition(int pos);
     void addProperty(Property *property);
     void pay(int amount);
     void receive(int amount);
@@ -56,5 +58,8 @@ public:
     void declareBankruptcy(Player* creditor = nullptr);
     int makeDecision();
     void startAuction(Property* property, const std::vector<Player*>& players);
+    void moveToNearestStation(Game *game);
+    int getNumberOfHouses() const;
+    int getNumberOfHotels() const;
     ~Player();
 };

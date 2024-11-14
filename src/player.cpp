@@ -106,6 +106,10 @@ bool Player::isInJail() const
     return inJail;
 }
 
+void Player::setPosition(int pos){
+    position = pos;
+}
+
 void Player::sendToJail()
 {
     position = 10;
@@ -304,4 +308,57 @@ void Player::unmortgagedProperty(Property *property)
     std::cout << "Игрок " << name << " выкупил имущество \"" << property->getName()
               << "\" за " << unMortgageCost << " монет.\n";
     totalPriceOfProperty += property->calculateMortgage();
+}
+
+void Player::moveToNearestStation(Game *game) {
+    int nearestStationPosition = -1;
+    int minDistance = game->getBoardSize();
+
+    for (const auto& cell : game->getBoard().getAllCells()) {
+        if (cell->getType() == CellType::PropRailway) {
+            int distance = std::abs(cell->getPosition() - position);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestStationPosition = cell->getPosition();
+            }
+        }
+    }
+
+    if (nearestStationPosition != -1) {
+        position = nearestStationPosition;
+        std::cout << "Игрок перемещен на ближайшую станцию на позиции " << position << ".\n";
+    } else {
+        std::cout << "Станции не найдены на игровом поле.\n";
+    }
+}
+
+// Метод для подсчета всех домов у игрока
+int Player::getNumberOfHouses() const {
+    int houseCount = 0;
+    for (Property *property : listOfProperty) {
+        if (property->isStreet()) {
+            Street *street = dynamic_cast<Street *>(property);
+            if (street) {
+                houseCount += street->getLevelOfStreet();
+                if (street->getLevelOfStreet() == 4){
+                    houseCount -= 1;
+                }
+            }
+        }
+    }
+    return houseCount;
+}
+
+// Метод для подсчета всех отелей у игрока
+int Player::getNumberOfHotels() const {
+    int hotelCount = 0;
+    for (Property *property : listOfProperty) {
+        if (property->isStreet()) {
+            Street *street = dynamic_cast<Street *>(property);
+            if (street && street-> getLevelOfStreet() == 4) {
+                hotelCount += 1;
+            }
+        }
+    }
+    return hotelCount;
 }

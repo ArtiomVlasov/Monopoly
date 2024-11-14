@@ -9,7 +9,9 @@ public:
     Game(int numPlayers, int numCells);
     void start();
     std::vector<Player *> getListOfPlayers();
-    void takeTurn();        
+    void takeTurn();
+    int getBoardSize();
+    Board getBoard();
     bool isGameOver() const; 
     
 private:

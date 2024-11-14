@@ -1,5 +1,6 @@
 #include "property.hpp"
 #include "player.hpp"
+#include <cmath> 
 
 Property::Property(CellType type, std::string Name, int Price, int Rent, Player *owner)
     : Cell(type), name(Name), price(Price), rent(Rent), owner(owner), isMortgage(false) {}
@@ -133,6 +134,13 @@ int Property::calculateMortgage()
 int Property::calculateUnMortgage()
 {
     return (rent / 2 + rent * 0.1);
+}
+
+bool Property::isStreet(){
+    if(type == CellType::PropUtilities || type == CellType::PropRailway){
+        return false;
+    }
+    return true;
 }
 
 Property::~Property()
