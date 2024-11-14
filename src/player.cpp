@@ -143,6 +143,10 @@ bool Player::canBuildOn(Property *property) const{
         return false;
     }
 
+    if(street -> getLevelOfStreet() == 5){
+        return false;
+    }
+
     return true;
 }
 
@@ -340,7 +344,7 @@ int Player::getNumberOfHouses() const {
             Street *street = dynamic_cast<Street *>(property);
             if (street) {
                 houseCount += street->getLevelOfStreet();
-                if (street->getLevelOfStreet() == 4){
+                if (street->getLevelOfStreet() == 5){
                     houseCount -= 1;
                 }
             }
@@ -355,10 +359,25 @@ int Player::getNumberOfHotels() const {
     for (Property *property : listOfProperty) {
         if (property->isStreet()) {
             Street *street = dynamic_cast<Street *>(property);
-            if (street && street-> getLevelOfStreet() == 4) {
+            if (street && street-> getLevelOfStreet() == 5) {
                 hotelCount += 1;
             }
         }
     }
     return hotelCount;
+}
+
+int Player::getOwnedPropertyCount(CellType type)
+{
+    int countQuantityProperty = 0;
+    for (const Property* property : listOfProperty) {
+        if (property->getType() == type) {
+            countQuantityProperty++;
+        }
+    }
+    return countQuantityProperty;
+}
+
+int Player::getLastDiceRoll(){
+    return totalDiceRoll;
 }

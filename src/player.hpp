@@ -7,6 +7,7 @@
 class Street;
 class Property;
 class Game;
+enum class CellType;
 
 class Player
 {
@@ -18,6 +19,7 @@ private:
     bool inJail;
     bool bankrupt;
     int totalPriceOfProperty;
+    int totalDiceRoll;
     uint8_t numMovesInPrison;
 
 public:
@@ -61,5 +63,7 @@ public:
     void moveToNearestStation(Game *game);
     int getNumberOfHouses() const;
     int getNumberOfHotels() const;
+    int getOwnedPropertyCount(CellType type);
+    int getLastDiceRoll();
     ~Player();
 };
