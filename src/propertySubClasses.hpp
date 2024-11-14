@@ -33,7 +33,6 @@ public:
     Street(CellType type, std::string name, int price, int rent, CellType color);
     int getBuildingCost();
     void buildNewHouse();
-    bool CanBuildHouse(Player &player);
     void demolishHouse();
     int getLevelOfStreet();
     ~Street();
