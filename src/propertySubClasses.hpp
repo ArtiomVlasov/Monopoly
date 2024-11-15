@@ -1,5 +1,5 @@
 #include "property.hpp"
-
+#pragma once
 class Railway : public Property
 {
 protected:
