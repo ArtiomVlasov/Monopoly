@@ -1,5 +1,5 @@
 #include "cell.hpp"
-
+#include <iostream>
 Cell::Cell(CellType type):type(type){}
 
 CellType Cell::getType() const {
@@ -30,3 +30,9 @@ int Cell::handleCellType(CellType propertyType) {
             return 1;
     }
 }
+
+void Cell::onLand() {
+    std::cout << "ты на клетке";
+}
+
+void Cell::defaultAction(Player *player, Game* game) {}
