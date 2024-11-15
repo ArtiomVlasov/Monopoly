@@ -143,6 +143,7 @@ bool Property::isStreet(){
     return true;
 }
 
-Property::~Property()
-{
+Player* Property::getOwner() {
+    return owner;
 }
+
