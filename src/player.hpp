@@ -23,13 +23,12 @@ private:
     uint8_t numMovesInPrison;
 
 public:
-    enum AffordStatus
-    {
-        CAN_AFFORD,
-        NEED_TO_SELL_PROPERTY,
+    enum AffordStatus {
+        CAN_AFFORD,        
+        NEED_TO_SELL_PROPERTY, 
         CANNOT_AFFORD
     };
-
+    
     Player(std::string name);
     Player();
     void setInJael(bool flag); //????????????????????????
@@ -55,18 +54,17 @@ public:
     void releaseFromJail();
     bool canBuildOn(Property *property) const;
     void buildStructure(Street *property);
-    void destroyStructure(Street *street);
+    void destroyStructure(Street* street);
     int getNumMovesInPrison();
     void incrementNumMovesInPrison();
-    void declareBankruptcy(Player *creditor = nullptr);
+    void declareBankruptcy(Player* creditor = nullptr);
     int makeDecision();
-    void startAuction(Property *property, const std::vector<Player *> &players);
+    void startAuction(Property* property, const std::vector<Player*>& players);
     void moveToNearestStation(Game *game, int posIndex);
     int getNumberOfHouses() const;
     int getNumberOfHotels() const;
     int getOwnedPropertyCount(CellType type);
     int getLastDiceRoll();
-    void setDiceRoll(Game *game);
     void payToExit(int jailFee);
     ~Player();
 };

@@ -20,11 +20,11 @@ Game::Game(int numPlayers, int numCells)
     }
 }
 
-int Game::rollDice()
+int Game::rollDice(gameRollValue gamerollvalue) const
 {
-    firstDiceValue = std::rand() % 7;
-    secondDiceValue = std::rand() % 7;
-    return firstDiceValue + secondDiceValue;
+    gamerollvalue.firstValue = std::rand() % 7;
+    gamerollvalue.secondValue = std::rand() % 7;
+    return gamerollvalue.firstValue + gamerollvalue.secondValue;
 }
 
 
@@ -44,10 +44,6 @@ void Game::start()
         }
         takeTurn();
     }
-} 
-
-int Game::getRollDice(){
-    return firstDiceValue+secondDiceValue;
 }
 
 void Game::nextPlayer()
@@ -58,10 +54,11 @@ void Game::nextPlayer()
 
 void Game::takeTurn()
 {
-    rollDice();
+    gameRollValue gamerollvalue;
+    rollDice(gamerollvalue);
     if (players[playerTurn]->isInJail())
     {
-        if (firstDiceValue == secondDiceValue) {
+        if (gamerollvalue.firstValue == gamerollvalue.secondValue) {
             players[playerTurn]->releaseFromJail();
         }
         else {
@@ -76,7 +73,7 @@ void Game::takeTurn()
             return;
         }    
     }
-    players[playerTurn]->makeMove(firstDiceValue + secondDiceValue); 
+    players[playerTurn]->makeMove(gamerollvalue.firstValue + gamerollvalue.secondValue); 
     Cell *cell = board->getCell(players[playerTurn]->getPosition()).get();
     cell->defaultAction(players[playerTurn], this);
     displayMenu();
