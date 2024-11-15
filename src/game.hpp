@@ -1,7 +1,7 @@
 #include <vector>
 #include <memory>
 #include "board.hpp"
-
+#pragma once
 class Player;
 
 class Game {
@@ -13,11 +13,15 @@ public:
     int getBoardSize();
     Board getBoard();
     bool isGameOver() const; 
-    
+    void sellProperty(Player* player);
+    int rollDice() ;
 private:
-    int currentPlayerIndex;
+    void caseMapToAction(int a);
+    int firstValue;
+    int secondValue;
+    int playerTurn;
     std::vector<Player *> players;
-    Board board;
-    int rollDice() const;
+    Board* board;
+    int numPlayers;
     void nextPlayer();           
 };
