@@ -1,15 +1,15 @@
-#include <game.hpp>
+#include "game.hpp"
 #include <string>
 #include <cstdlib>
 #include <ctime>
 #include "player.hpp" // без него ругается
-#include "render.hpp"
+#include "render.cpp"
 #include "TaxPrisonChance.hpp"
 
 Game::Game(int numPlayers, int numCells)
 {
     Board *board = new Board(numCells);
-    // this->board = board; add
+    this->board = board;
     std::string name;
     this->numPlayers = numPlayers;
     for (int index = 0; index < numPlayers; index++)
@@ -27,15 +27,20 @@ int Game::rollDice(gameRollValue gamerollvalue) const
     return gamerollvalue.firstValue + gamerollvalue.secondValue;
 }
 
+
+bool Game::isGameOver() const{ // опистаь
+    return false;
+}
+
 void Game::start()
 {
     WelcomeThePlayers(players);
     while (!isGameOver())
     {
-        Render::drawBoard();
+        drawBoard();
         for (int i = 0; i < numPlayers; i++)
         {
-            Render::displayPlayerInfo(*players[i]);
+            displayPlayerInfo(*players[i]);
         }
         takeTurn();
     }
@@ -69,12 +74,12 @@ void Game::takeTurn()
         }    
     }
     players[playerTurn]->makeMove(gamerollvalue.firstValue + gamerollvalue.secondValue); 
-    Cell *cell = board.getCell(players[playerTurn]->getPosition()).get();
+    Cell *cell = board->getCell(players[playerTurn]->getPosition()).get();
     cell->defaultAction(players[playerTurn], this);
-    Render::displayMenu();
+    displayMenu();
 
     int a;
-    std::cin >> "ВВОД какое действие хотите соверить : " >> a;
+    scanf("%d", &a);
     switch (a)
     {
     case 1:
