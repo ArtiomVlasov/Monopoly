@@ -40,7 +40,7 @@ void Tax::defaultAction(Player *player, Game *game)
 
 Tax::~Tax() {}
 
-Prison::Prison() : Cell(CellType::Prison), callDown(3), jailFee(100) {}
+Prison::Prison() : Cell(CellType::Prison), callDown(3) {}
 
 void Prison::onLand()
 {
@@ -53,7 +53,7 @@ void Prison::defaultAction(Player *player, Game *game)
     player->sendToJail();
 }
 
-int Prison::getJailFee() const
+int Prison::getJailFee()
 {
     return jailFee;
 }
@@ -87,7 +87,15 @@ void Chance::initializeEffects()
         [this](Player *player)
         {
             std::cout << player->getName() << " перемещается на ближайшую станцию.\n";
-            player->moveToNearestStation(this->game);
+            if (player->getPosition() == 7) {
+                player->moveToNearestStation(this->game, 7);
+            }
+            else if (player->getPosition() == 23)   {
+                player->moveToNearestStation(this->game, 23);
+            } 
+            else if (player->getPosition() == 36) {
+                 player->moveToNearestStation(this->game, 36);
+            }
         },
         // Премия за победу в конкурсе
         [](Player *player)
