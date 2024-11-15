@@ -2,7 +2,7 @@
 #include <string>
 #include "game.hpp"
 #include <iostream>
-
+#pragma once
 
 class Property : public Cell
 {
@@ -14,7 +14,7 @@ private:
     bool isMortgage;
 
 protected:
-    int virtual calculateRent(Player *player) = 0;
+    int virtual calculateRent(Player *player);
     
 
 public:
@@ -26,8 +26,8 @@ public:
         virtual Player *getOwner() {
         return owner;
     }
-    int virtual calculateMortgage();
-    int virtual calculateUnMortgage();
+    int calculateMortgage();
+    int calculateUnMortgage();
     void setOwner(Player *newOwner);
     virtual void mortgage();   // заложить недвижимость
     virtual void unMortgage(Player *player); // выкупить
