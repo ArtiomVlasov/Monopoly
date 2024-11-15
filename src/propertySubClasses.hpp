@@ -1,5 +1,5 @@
 #include "property.hpp"
-
+#pragma once
 class Railway : public Property
 {
 protected:
@@ -30,10 +30,9 @@ protected:
     int calculateRent(Player* player) override;
 
 public:
-    Street(CellType type, std::string name, int price, int rent, CellType color);
+    Street(CellType type, std::string name, int price, int rent);
     int getBuildingCost();
     void buildNewHouse();
-    bool CanBuildHouse(Player &player);
     void demolishHouse();
     int getLevelOfStreet();
     ~Street();
