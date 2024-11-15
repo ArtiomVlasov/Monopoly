@@ -1,7 +1,7 @@
 #include "cell.hpp"
 #include <functional>
 #include "game.hpp"
-
+#pragma once
 class Tax : public Cell
 {
 private:
@@ -19,13 +19,13 @@ class Prison : public Cell
 {
 private:
     const int callDown;
-    const int jailFee;
+    static const int jailFee = 100;
 
 public:
     Prison();
     void onLand() override;
     void defaultAction(Player *player, Game* game) override; // отправить в тюрьму
-    int getJailFee() const;
+    static int getJailFee();
     void payToExit(Player* player);
     ~Prison();
 };
@@ -48,7 +48,6 @@ class PublicTreasury : public Cell {
 public:
     void onLand() override;
     void defaultAction(Player* player, Game* game) override; 
-    ~PublicTreasury();
 
 private:
     std::vector<std::function<void(Player*)>> actions;
