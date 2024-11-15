@@ -106,7 +106,8 @@ bool Player::isInJail() const
     return inJail;
 }
 
-void Player::setPosition(int pos){
+void Player::setPosition(int pos)
+{
     position = pos;
 }
 
@@ -122,24 +123,34 @@ void Player::releaseFromJail()
     inJail = false;
 }
 
-bool Player::canBuildOn(Property *property) const{
+bool Player::canBuildOn(Property *property) const
+{
     Street *street = dynamic_cast<Street *>(property);
-    if (!street) {
+    if (!street)
+    {
         std::cout << "Невозможно построить, так как это не улица.\n";
         return false;
     }
 
-    if (street->getOwner() != this) {
+    if (street->getOwner() != this)
+    {
         std::cout << "Улица не принадлежит игроку " << name << ".\n";
         return false;
     }
-    if (!street->isFullListOfProperty(property -> getOwner(), street -> getType())) {
+    if (!street->isFullListOfProperty(property->getOwner(), street->getType()))
+    {
         std::cout << "Игрок должен владеть всей цветовой группой, чтобы строить здесь.\n";
         return false;
     }
 
-    if (street->isMortgaged()) {
+    if (street->isMortgaged())
+    {
         std::cout << "Невозможно построить, пока улица заложена.\n";
+        return false;
+    }
+
+    if (street->getLevelOfStreet() == 5)
+    {
         return false;
     }
 
@@ -153,23 +164,25 @@ void Player::buildStructure(Street *street)
         pay(street->getBuildingCost());
         street->buildNewHouse();
 
-        std::cout << "Игрок " << name << " построил здание на \"" << street->getName() 
+        std::cout << "Игрок " << name << " построил здание на \"" << street->getName()
                   << "\". Уровень улицы теперь: " << street->getLevelOfStreet() << ".\n";
     }
     else if (balance < street->getBuildingCost())
     {
         std::cout << "Недостаточно средств для строительства на \"" << street->getName() << "\".\n";
     }
-    
 }
 
-void Player::destroyStructure(Street *street) {
-    if (street->getOwner() != this) { // хз надо здесь проверять это
+void Player::destroyStructure(Street *street)
+{
+    if (street->getOwner() != this)
+    { // хз надо здесь проверять это
         std::cout << "Игрок " << name << " не владеет этой улицей.\n";
         return;
     }
 
-    if (street->getLevelOfStreet() == 1) {
+    if (street->getLevelOfStreet() == 1)
+    {
         std::cout << "На улице " << street->getName() << " нет построек для сноса.\n";
         return;
     }
@@ -333,14 +346,19 @@ void Player::moveToNearestStation(Game *game, int posIndex) {
 }
 
 // Метод для подсчета всех домов у игрока
-int Player::getNumberOfHouses() const {
+int Player::getNumberOfHouses() const
+{
     int houseCount = 0;
-    for (Property *property : listOfProperty) {
-        if (property->isStreet()) {
+    for (Property *property : listOfProperty)
+    {
+        if (property->isStreet())
+        {
             Street *street = dynamic_cast<Street *>(property);
-            if (street) {
+            if (street)
+            {
                 houseCount += street->getLevelOfStreet();
-                if (street->getLevelOfStreet() == 4){
+                if (street->getLevelOfStreet() == 5)
+                {
                     houseCount -= 1;
                 }
             }
@@ -350,12 +368,16 @@ int Player::getNumberOfHouses() const {
 }
 
 // Метод для подсчета всех отелей у игрока
-int Player::getNumberOfHotels() const {
+int Player::getNumberOfHotels() const
+{
     int hotelCount = 0;
-    for (Property *property : listOfProperty) {
-        if (property->isStreet()) {
+    for (Property *property : listOfProperty)
+    {
+        if (property->isStreet())
+        {
             Street *street = dynamic_cast<Street *>(property);
-            if (street && street-> getLevelOfStreet() == 4) {
+            if (street && street->getLevelOfStreet() == 5)
+            {
                 hotelCount += 1;
             }
         }
@@ -363,7 +385,25 @@ int Player::getNumberOfHotels() const {
     return hotelCount;
 }
 
+int Player::getOwnedPropertyCount(CellType type)
+{
+    int countQuantityProperty = 0;
+    for (const Property *property : listOfProperty)
+    {
+        if (property->getType() == type)
+        {
+            countQuantityProperty++;
+        }
+    }
+    return countQuantityProperty;
+}
 
-void Player::payToExit(int jailFee) {
-    printf("S");
+int Player::getLastDiceRoll()
+{
+    return totalDiceRoll;
+}
+
+void Player::setDiceRoll(Game *game)
+{
+    totalDiceRoll = game->getRollDice();
 }

@@ -4,28 +4,26 @@
 #pragma once
 class Player;
 
-class Game {
+class Game
+{
 public:
-    typedef struct gameRollValue
-    {
-        int firstValue;
-        int secondValue;
-    }gameRollValue;
-    
     Game(int numPlayers, int numCells);
     void start();
     std::vector<Player *> getListOfPlayers();
     void takeTurn();
     int getBoardSize();
     Board getBoard();
-    bool isGameOver() const; 
+    bool isGameOver() const;
+    int getRollDice();
     void sellProperty();
 
 private:
     int playerTurn;
+    int firstDiceValue;
+    int secondDiceValue;
     std::vector<Player *> players;
-    Board* board;
+    Board *board;
     int numPlayers;
-    int rollDice(gameRollValue gamerollvalue) const;
-    void nextPlayer();           
+    int rollDice();
+    void nextPlayer();
 };
