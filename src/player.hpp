@@ -3,10 +3,11 @@
 #include <vector>
 #include <cstdint>
 
-
+#pragma once
 class Street;
 class Property;
 class Game;
+enum class CellType;
 
 class Player
 {
@@ -18,6 +19,7 @@ private:
     bool inJail;
     bool bankrupt;
     int totalPriceOfProperty;
+    int totalDiceRoll;
     uint8_t numMovesInPrison;
 
 public:
@@ -58,8 +60,12 @@ public:
     void declareBankruptcy(Player* creditor = nullptr);
     int makeDecision();
     void startAuction(Property* property, const std::vector<Player*>& players);
-    void moveToNearestStation(Game *game);
+    void moveToNearestStation(Game *game, int posIndex);
     int getNumberOfHouses() const;
     int getNumberOfHotels() const;
+    int getOwnedPropertyCount(CellType type);
+    int getLastDiceRoll();
+    void payToExit(int jailFee);
+    void setDiceRoll(Game *game);
     ~Player();
 };
