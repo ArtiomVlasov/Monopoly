@@ -2,7 +2,7 @@
 #include <string>
 #include "game.hpp"
 #include <iostream>
-
+#pragma once
 
 class Property : public Cell
 {
@@ -14,28 +14,23 @@ private:
     bool isMortgage;
 
 protected:
-    int virtual calculateRent(Player *player);
-    
-
+    virtual int calculateRent(Player *player) = 0;
 public:
     Property(CellType type,std::string Name, int Price, int Rent, Player *owner);
     void defaultAction(Player *player, Game* game) override;
-    virtual void payRent(Player *player); // платишь ренту
+    void payRent(Player *player); // платишь ренту
     int getRent() const;
-    virtual bool isOwned();
-        virtual Player *getOwner() {
-        return owner;
-    }
-    int virtual calculateMortgage();
-    int virtual calculateUnMortgage();
+    bool isOwned();
+    Player *getOwner();
+    int calculateMortgage();
+    int calculateUnMortgage();
     void setOwner(Player *newOwner);
-    virtual void mortgage();   // заложить недвижимость
-    virtual void unMortgage(Player *player); // выкупить
+    void mortgage();   // заложить недвижимость
+    void unMortgage(Player *player); // выкупить
     void markAsAvailable();
     bool isMortgaged();
-    virtual int getPrice() const;
+    int getPrice() const;
     std::string getName() const;
-    virtual bool isFullListOfProperty(Player *player, CellType type);
+    bool isFullListOfProperty(Player *player, CellType type);
     bool isStreet();
-    ~Property();
 };
