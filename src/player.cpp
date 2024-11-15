@@ -310,16 +310,16 @@ void Player::unmortgagedProperty(Property *property)
     totalPriceOfProperty += property->calculateMortgage();
 }
 
-void Player::moveToNearestStation(Game *game) {
+void Player::moveToNearestStation(Game *game, int posIndex) {
     int nearestStationPosition = -1;
     int minDistance = game->getBoardSize();
 
     for (const auto& cell : game->getBoard().getAllCells()) {
         if (cell->getType() == CellType::PropRailway) {
-            int distance = std::abs(cell->getPosition() - position);
+            int distance = std::abs( position);
             if (distance < minDistance) {
                 minDistance = distance;
-                nearestStationPosition = cell->getPosition();
+                nearestStationPosition = posIndex;
             }
         }
     }
@@ -361,4 +361,32 @@ int Player::getNumberOfHotels() const {
         }
     }
     return hotelCount;
+}
+
+
+void Player::payToExit(int jailFee) {
+    printf("S");
+}
+
+int Player::getOwnedPropertyCount(CellType type)
+{
+    int countQuantityProperty = 0;
+    for (const Property *property : listOfProperty)
+    {
+        if (property->getType() == type)
+        {
+            countQuantityProperty++;
+        }
+    }
+    return countQuantityProperty;
+}
+
+int Player::getLastDiceRoll()
+{
+    return totalDiceRoll;
+}
+
+void Player::setDiceRoll(Game *game)
+{
+    totalDiceRoll = 0;
 }
