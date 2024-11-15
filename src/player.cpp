@@ -143,10 +143,6 @@ bool Player::canBuildOn(Property *property) const{
         return false;
     }
 
-    if(street -> getLevelOfStreet() == 5){
-        return false;
-    }
-
     return true;
 }
 
@@ -314,16 +310,16 @@ void Player::unmortgagedProperty(Property *property)
     totalPriceOfProperty += property->calculateMortgage();
 }
 
-void Player::moveToNearestStation(Game *game) {
+void Player::moveToNearestStation(Game *game, int posIndex) {
     int nearestStationPosition = -1;
     int minDistance = game->getBoardSize();
 
     for (const auto& cell : game->getBoard().getAllCells()) {
         if (cell->getType() == CellType::PropRailway) {
-            int distance = std::abs(cell->getPosition() - position);
+            int distance = std::abs( position);
             if (distance < minDistance) {
                 minDistance = distance;
-                nearestStationPosition = cell->getPosition();
+                nearestStationPosition = posIndex;
             }
         }
     }
@@ -344,7 +340,7 @@ int Player::getNumberOfHouses() const {
             Street *street = dynamic_cast<Street *>(property);
             if (street) {
                 houseCount += street->getLevelOfStreet();
-                if (street->getLevelOfStreet() == 5){
+                if (street->getLevelOfStreet() == 4){
                     houseCount -= 1;
                 }
             }
@@ -359,7 +355,7 @@ int Player::getNumberOfHotels() const {
     for (Property *property : listOfProperty) {
         if (property->isStreet()) {
             Street *street = dynamic_cast<Street *>(property);
-            if (street && street-> getLevelOfStreet() == 5) {
+            if (street && street-> getLevelOfStreet() == 4) {
                 hotelCount += 1;
             }
         }
@@ -367,17 +363,7 @@ int Player::getNumberOfHotels() const {
     return hotelCount;
 }
 
-int Player::getOwnedPropertyCount(CellType type)
-{
-    int countQuantityProperty = 0;
-    for (const Property* property : listOfProperty) {
-        if (property->getType() == type) {
-            countQuantityProperty++;
-        }
-    }
-    return countQuantityProperty;
-}
 
-int Player::getLastDiceRoll(){
-    return totalDiceRoll;
+void Player::payToExit(int jailFee) {
+    printf("S");
 }
