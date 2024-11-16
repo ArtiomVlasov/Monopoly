@@ -34,5 +34,3 @@ int Cell::handleCellType(CellType propertyType) {
 void Cell::onLand() {
     std::cout << "ты на клетке";
 }
-
-void Cell::defaultAction(Player *player, Game* game) {}

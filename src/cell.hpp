@@ -30,7 +30,7 @@ public:
     virtual void onLand(); // сообщает на какую клетку попал
     CellType getType() const;
     int handleCellType(CellType propertyType);
-    virtual void defaultAction(Player *player, Game* game);
+    virtual void defaultAction(Player *player, Game* game) = 0;
     virtual ~Cell() = default;
     bool isEmpty();
 };
