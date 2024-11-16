@@ -17,6 +17,7 @@ enum class CellType { // надо подумать можно ли как-то �
     PropUtilities,
     Chance,
     Tax,
+    EmptyCell,
     publicTreasury,
     Prison
 };

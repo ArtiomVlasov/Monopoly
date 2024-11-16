@@ -110,7 +110,7 @@ void Game::takeTurn()
     }
     players[playerTurn]->makeMove(firstValue + secondValue); 
     printf("%d %d\n",firstValue, secondValue );
-    Cell *cell = board->getCell(0).get();
+    Cell *cell = board->getCell(players[playerTurn]->getPosition()).get();
     //printf("_________________________- %d\n", players[playerTurn]->getPosition());
     cell->defaultAction(players[playerTurn], this);
     displayMenu();

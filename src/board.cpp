@@ -16,7 +16,7 @@ Board::Board(int numCells, Game *game):game(game)
     cells.push_back(std::make_shared<Chance>(game));
     cells.push_back(std::make_shared<Street>(CellType::WhiteStreet, "Euston Road", 100, 6));
     cells.push_back(std::make_shared<Street>(CellType::WhiteStreet, "Pentonville Road", 120, 8));
-    //cells.push_back(std::make_shared<EmptyCell>(CellType::Empty));
+    cells.push_back(std::make_shared<EmptyCell>());
 
     cells.push_back(std::make_shared<Street>(CellType::PinkStreet, "Pall Mall", 140, 10));
     cells.push_back(std::make_shared<Utilities>(CellType::PropUtilities, "Electric Company", 150, 1));
@@ -28,7 +28,7 @@ Board::Board(int numCells, Game *game):game(game)
     cells.push_back(std::make_shared<PublicTreasury>());
     cells.push_back(std::make_shared<Street>(CellType::OrangeStreet, "Marlborough Street", 180, 14));
     cells.push_back(std::make_shared<Street>(CellType::OrangeStreet, "Vine Street", 200, 16));
-    //cells.push_back(std::make_shared<EmptyCell>(CellType::Empty));
+    cells.push_back(std::make_shared<EmptyCell>());
 
     cells.push_back(std::make_shared<Street>(CellType::RedStreet, "Strand", 220, 18));
     cells.push_back(std::make_shared<Chance>(game));
@@ -52,7 +52,7 @@ Board::Board(int numCells, Game *game):game(game)
     cells.push_back(std::make_shared<Street>(CellType::BlueStreet, "Park Lane", 350, 35));
     cells.push_back(std::make_shared<Tax>(100));
     cells.push_back(std::make_shared<Street>(CellType::BlueStreet, "Mayfair", 400, 50));
-    //cells.push_back(std::make_shared<EmptyCell>(CellType::Empty));
+    cells.push_back(std::make_shared<EmptyCell>());
 
 }
 

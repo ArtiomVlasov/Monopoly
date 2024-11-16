@@ -54,3 +54,10 @@ private:
     std::vector<std::function<void(Player*)>> actions;
     void initializeActions();
 };  
+
+class EmptyCell : public Cell{
+public:
+    EmptyCell();
+    void onLand() override;
+    void defaultAction(Player* player, Game* game) override; 
+};

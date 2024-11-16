@@ -46,17 +46,20 @@ void Property::defaultAction(Player *player, Game *game)
         player->startAuction(this, game->getListOfPlayers());
         return;
     }
-    int ans = player->makeDecision();
-    switch (ans)
+    else
     {
-    case 0: // может купить
-        std::cout << "Игрок " << player->getName() << " решил купить имущество за " << price << " монет.\n";
-        player->buy(this);
-        break;
-    case 1: // аукцион
-        std::cout << "Игрок " << player->getName() << " выставляет имущество на аукцион.\n";
-        player->startAuction(this, game->getListOfPlayers());
-        break;
+        int ans = player->makeDecision();
+        switch (ans)
+        {
+        case 0: // может купить
+            std::cout << "Игрок " << player->getName() << " решил купить имущество за " << price << " монет.\n";
+            player->buy(this);
+            break;
+        case 1: // аукцион
+            std::cout << "Игрок " << player->getName() << " выставляет имущество на аукцион.\n";
+            player->startAuction(this, game->getListOfPlayers());
+            break;
+        }
     }
 }
 

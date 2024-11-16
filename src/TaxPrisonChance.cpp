@@ -202,3 +202,10 @@ void PublicTreasury::defaultAction(Player* player, Game* game) {
     std::cout << player->getName() << " попадает на клетку 'Общественная казна'.\n";
     actions[effectIndex](player);
 }
+
+EmptyCell::EmptyCell(): Cell(CellType::EmptyCell){}
+
+void EmptyCell::onLand() {
+    std::cout << "Вы попали на 'Бесплатную парковку', можете передохнуть!\n";
+}
+void EmptyCell::defaultAction(Player* player, Game* game){} 
