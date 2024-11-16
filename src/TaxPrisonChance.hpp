@@ -48,9 +48,9 @@ class PublicTreasury : public Cell {
 public:
     void onLand() override;
     void defaultAction(Player* player, Game* game) override; 
+    PublicTreasury();
 
 private:
     std::vector<std::function<void(Player*)>> actions;
-    PublicTreasury();
     void initializeActions();
 };  
