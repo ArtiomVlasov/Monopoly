@@ -6,6 +6,16 @@
 #include "render.hpp"
 #include "TaxPrisonChance.hpp"
 
+#include <cstdlib> // для system()
+
+void clearConsole() {
+#ifdef _WIN32
+    system("cls"); // Windows
+#else
+    system("clear"); // Linux / macOS
+#endif
+}
+
 Game::Game(int numPlayers, int numCells)
 {
     Board *board = new Board(numCells, this);
@@ -78,6 +88,7 @@ void Game::start()
             displayPlayerInfo(players[i]);
         }
         takeTurn();
+        clearConsole();
     }
 }
 
