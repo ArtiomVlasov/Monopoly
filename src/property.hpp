@@ -17,7 +17,7 @@ protected:
     virtual int calculateRent(Player *player) = 0;
 public:
     Property(CellType type,std::string Name, int Price, int Rent, Player *owner);
-    void defaultAction(Player *player, Game* game) override;
+    virtual void defaultAction(Player *player, Game* game) override;
     void payRent(Player *player); // платишь ренту
     int getRent() const;
     bool isOwned();

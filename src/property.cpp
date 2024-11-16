@@ -1,41 +1,44 @@
 #include "property.hpp"
 #include "player.hpp"
-#include <cmath> 
+#include <cmath>
 
 Property::Property(CellType type, std::string Name, int Price, int Rent, Player *owner)
     : Cell(type), name(Name), price(Price), rent(Rent), owner(owner), isMortgage(false) {}
 
 void Property::defaultAction(Player *player, Game *game)
 {
-    if (player->getName() != owner->getName() && !isMortgage)
+    if (owner != nullptr)
     {
-        int rentAmount = calculateRent(player);
-
-        switch (player->canAfford(rentAmount))
+        if (player->getName() != owner->getName() && !isMortgage)
         {
-        case Player::AffordStatus::CAN_AFFORD:
-            std::cout << "Игрок " << player->getName() << " попал на имущество, принадлежащее " << owner->getName()
-                      << ". Заплатите ренту в размере " << rentAmount << " монет.\n";
-            payRent(player); // Выполняем оплату ренты
-            break;
+            int rentAmount = calculateRent(player);
 
-        case Player::AffordStatus::NEED_TO_SELL_PROPERTY:
-            std::cout << "Игрок " << player->getName() << " попал на имущество, принадлежащее " << owner->getName()
-                      << ", но недостаточно средств на балансе. Продайте часть имущества для оплаты ренты в размере "
-                      << rentAmount << " монет.\n";
-                    // какой то метод из Game наверно надо взять, он будет давать игроку возмежность сделать выбор что продать
-            break;
+            switch (player->canAfford(rentAmount))
+            {
+            case Player::AffordStatus::CAN_AFFORD:
+                std::cout << "Игрок " << player->getName() << " попал на имущество, принадлежащее " << owner->getName()
+                          << ". Заплатите ренту в размере " << rentAmount << " монет.\n";
+                payRent(player); // Выполняем оплату ренты
+                break;
 
-        case Player::AffordStatus::CANNOT_AFFORD:
-            std::cout << "Игрок " << player->getName() << " не может позволить себе оплатить ренту. Объявляется банкротство.\n";
-            player->declareBankruptcy(owner);
+            case Player::AffordStatus::NEED_TO_SELL_PROPERTY:
+                std::cout << "Игрок " << player->getName() << " попал на имущество, принадлежащее " << owner->getName()
+                          << ", но недостаточно средств на балансе. Продайте часть имущества для оплаты ренты в размере "
+                          << rentAmount << " монет.\n";
+                // какой то метод из Game наверно надо взять, он будет давать игроку возмежность сделать выбор что продать
+                break;
+
+            case Player::AffordStatus::CANNOT_AFFORD:
+                std::cout << "Игрок " << player->getName() << " не может позволить себе оплатить ренту. Объявляется банкротство.\n";
+                player->declareBankruptcy(owner);
+                return;
+            }
+        }
+        else if (player->getName() != owner->getName() && isMortgage)
+        {
+            std::cout << "Игрок " << player->getName() << " попал на заложенное имущество. Рента не требуется.\n";
             return;
         }
-    }
-    else if (player->getName() != owner->getName() && isMortgage)
-    {
-        std::cout << "Игрок " << player->getName() << " попал на заложенное имущество. Рента не требуется.\n";
-        return;
     }
     else if (player->canAfford(price) == Player::AffordStatus::CANNOT_AFFORD)
     {
@@ -119,8 +122,10 @@ void Property::unMortgage(Player *player)
 bool Property::isFullListOfProperty(Player *player, CellType type)
 {
     int countQuantityProperty = 0;
-    for (const Property* property : player->getProperties()) {
-        if (property->getType() == type) {
+    for (const Property *property : player->getProperties())
+    {
+        if (property->getType() == type)
+        {
             countQuantityProperty++;
         }
     }
@@ -136,14 +141,16 @@ int Property::calculateUnMortgage()
     return (rent / 2 + rent * 0.1);
 }
 
-bool Property::isStreet(){
-    if(type == CellType::PropUtilities || type == CellType::PropRailway){
+bool Property::isStreet()
+{
+    if (type == CellType::PropUtilities || type == CellType::PropRailway)
+    {
         return false;
     }
     return true;
 }
 
-Player* Property::getOwner() {
+Player *Property::getOwner()
+{
     return owner;
 }
-
