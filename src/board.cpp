@@ -1,10 +1,10 @@
-#include "board.hpp"
 #include "property.hpp"
 #include "cell.hpp"
+#include "game.hpp"
 #include "TaxPrisonChance.hpp"
 #include "propertySubClasses.hpp"
 
-Board::Board(int numCells)
+Board::Board(int numCells, Game *game):game(game)
 {
     cells.push_back(std::make_shared<Street>(CellType::BrownStreet, "Old Kent Road", 60, 2));
     cells.push_back(std::make_shared<PublicTreasury>());
@@ -13,7 +13,7 @@ Board::Board(int numCells)
     cells.push_back(std::make_shared<Railway>(CellType::PropRailway, "King's Cross Station", 200, 25));
 
     cells.push_back(std::make_shared<Street>(CellType::WhiteStreet, "The Angel Islington", 100, 6));
-    //cells.push_back(std::make_shared<Chance>());
+    cells.push_back(std::make_shared<Chance>(game));
     cells.push_back(std::make_shared<Street>(CellType::WhiteStreet, "Euston Road", 100, 6));
     cells.push_back(std::make_shared<Street>(CellType::WhiteStreet, "Pentonville Road", 120, 8));
     //cells.push_back(std::make_shared<EmptyCell>(CellType::Empty));
@@ -31,7 +31,7 @@ Board::Board(int numCells)
     //cells.push_back(std::make_shared<EmptyCell>(CellType::Empty));
 
     cells.push_back(std::make_shared<Street>(CellType::RedStreet, "Strand", 220, 18));
-    //cells.push_back(std::make_shared<Chance>());
+    cells.push_back(std::make_shared<Chance>(game));
     cells.push_back(std::make_shared<Street>(CellType::RedStreet, "Fleet Street", 220, 18));
     cells.push_back(std::make_shared<Street>(CellType::RedStreet, "Trafalgar Square", 240, 20));
     cells.push_back(std::make_shared<Railway>(CellType::PropRailway, "Fenchurch St Station", 200, 25));
@@ -48,7 +48,7 @@ Board::Board(int numCells)
     cells.push_back(std::make_shared<Street>(CellType::GreenStreet, "Bond Street", 320, 28));
     cells.push_back(std::make_shared<Railway>(CellType::PropRailway, "Liverpool Street Station", 200, 25));
 
-    //cells.push_back(std::make_shared<Chance>());
+    cells.push_back(std::make_shared<Chance>(game));
     cells.push_back(std::make_shared<Street>(CellType::BlueStreet, "Park Lane", 350, 35));
     cells.push_back(std::make_shared<Tax>(100));
     cells.push_back(std::make_shared<Street>(CellType::BlueStreet, "Mayfair", 400, 50));

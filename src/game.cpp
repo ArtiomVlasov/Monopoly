@@ -8,7 +8,7 @@
 
 Game::Game(int numPlayers, int numCells)
 {
-    Board *board = new Board(numCells);
+    Board *board = new Board(numCells, this);
     this->board = board;
     std::string name;
     this->numPlayers = numPlayers;

@@ -112,15 +112,15 @@ void drawBoard()
     }
 }
 
-void displayPlayerInfo(const Player &player)
+void displayPlayerInfo(Player *player)
 {
-    std::cout << "Игрок: " << player.getName() << "\n";
-    std::cout << "Баланс: " << player.getBalance() << "\n";
-    std::cout << "Позиция на поле: " << player.getPosition() << "\n";
-    std::cout << "В тюрьме: " << (player.isInJail() ? "Да" : "Нет") << "\n";
-    std::cout << "Банкрот: " << (player.isBankrupt() ? "Да" : "Нет") << "\n";
+    std::cout << "Игрок: " << player->getName() << "\n";
+    std::cout << "Баланс: " << player->getBalance() << "\n";
+    std::cout << "Позиция на поле: " << player->getPosition() << "\n";
+    std::cout << "В тюрьме: " << (player->isInJail() ? "Да" : "Нет") << "\n";
+    std::cout << "Банкрот: " << (player->isBankrupt() ? "Да" : "Нет") << "\n";
     std::cout << "Недвижимость:\n";
-    for (const Property *property : player.getProperties())
+    for (const Property *property : player->getProperties())
     {
         std::cout << " - " << property->getName() << "\n";
     }
