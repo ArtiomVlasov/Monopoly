@@ -4,44 +4,51 @@
 #include "property.hpp"
 
 
-std::vector<std::string> listOFstreets = {
-    "FP", // Free Parking
-    "KA", // Kentucky Avenue
-    "CH", // Chance
-    "IA", // Indiana Avenue
-    "IL", // Illinois Avenue
-    "BR", // B&O Railroad
-    "AA", // Atlantic Avenue
-    "VA", // Ventnor Avenue
-    "WW", // Water Works
-    "MG", // Marvin Gardens
-    "GJ", // Go to Jail
-    "NY", // New York Avenue
-    "PA", // Pacific Avenue
-    "TA", // Tennessee Avenue
-    "NC", // North Carolina Avenue
-    "CC", // Community Chest
-    "SJ", // St. James Place
-    "PA", // Pennsylvania Avenue
-    "PR", // Pennsylvania Railroad
-    "SL", // Short Line
-    "VA", // Virginia Avenue
-    "SA", // States Avenue
-    "PP", // Park Place
-    "EC", // Electric Company
-    "LT", // LUXURY TAX
-    "SC", // St. Charles Place
-    "J",  // Jail
-    "BW", // Boardwalk
-    "JV", // Just Visiting
-    "CA", // Connecticut Avenue
-    "VA", // Vermont Avenue
-    "OA", // Oriental Avenue
-    "RR", // Reading Railroad
-    "CT", // City Tax
-    "BA", // Baltic Avenue
-    "MA"  // Mediterranean Avenue
+std::vector<std::pair<std::string, std::string>> listOFstreets = {
+    {"GO", "GO"},
+    {"Mediterranean Avenue", "MA"},
+    {"Community Chest", "CC"},
+    {"Baltic Avenue", "BA"},
+    {"Income Tax", "IT"},
+    {"Reading Railroad", "RR"},
+    {"Oriental Avenue", "OA"},
+    {"Chance", "CH"},
+    {"Vermont Avenue", "VA"},
+    {"Connecticut Avenue", "CA"},
+    {"Jail (Just Visiting)", "JV"},
+    {"St. Charles Place", "SC"},
+    {"Electric Company", "EC"},
+    {"States Avenue", "SA"},
+    {"Virginia Avenue", "VA"},
+    {"Pennsylvania Railroad", "PR"},
+    {"St. James Place", "SJ"},
+    {"Community Chest", "CC"},
+    {"Tennessee Avenue", "TA"},
+    {"New York Avenue", "NY"},
+    {"Jail (Just Visiting)", "JV"},
+    {"Kentucky Avenue", "KA"},
+    {"Chance", "CH"},
+    {"Indiana Avenue", "IA"},
+    {"Illinois Avenue", "IA"},
+    {"B&O Railroad", "BR"},
+    {"Atlantic Avenue", "AA"},
+    {"Ventnor Avenue", "VA"},
+    {"Water Works", "WW"},
+    {"Marvin Gardens", "MG"},
+    {"Pacific Avenue", "PA"},
+    {"North Carolina Avenue", "NC"},
+    {"Community Chest", "CC"},
+    {"Pennsylvania Avenue", "PA"},
+    {"Short Line Railroad", "SL"},
+    {"Chance", "CH"},
+    {"Park Place", "PP"},
+    {"Luxury Tax", "LT"},
+    {"Boardwalk", "BW"},
+    {"Jail (Just Visiting)", "JV"}
 };
+
+// Удаляем дубликаты и сортируем по порядку, если необходимо.
+
 
 void drawBoard()
 {
@@ -57,7 +64,7 @@ void drawBoard()
             }
             else
             {
-                std::cout << "  " << listOFstreets[index] << "   |";
+                std::cout << "  " << listOFstreets[index].second << "   |";
                 index++;
             }
         }
@@ -76,9 +83,9 @@ void drawBoard()
             }
             else
             {
-                std::cout << " " << listOFstreets[index] << "   |";
+                std::cout << " " << listOFstreets[index].second << "   |";
                 printf("\t\t\t\t\t\t\t\t\t  ");
-                std::cout << " " << listOFstreets[index + 1] << "   |" << std::endl;
+                std::cout << " " << listOFstreets[index].second << "   |" << std::endl;
                 index++;
                 index++;
                 continue;
@@ -97,7 +104,7 @@ void drawBoard()
             }
             else
             {
-                std::cout << "  " << listOFstreets[index] << "   |";
+                std::cout << "  " << listOFstreets[index].second << "   |";
                 index++;
             }
         }
@@ -150,16 +157,16 @@ void RenderCreateCell(std::string s, int flag)
 
 void displayMenu()
 {   
-    std::cout << "Возможные действия в игре 'Монополия':n";
-    std::cout << "1. Продать собственность";
-    std::cout << "2. Построить дом/отель";
-    std::cout << "3. Выйти из тюрьмы";
-    std::cout << "4. Остаться в тюрьме";
-    std::cout << "10. Объявить банкротствоn";
-    std::cout << "11. Сделать предложение другим игрокамn";
-    std::cout << "12. Применить карточку 'Выход из тюрьмы бесплатно'n";
-    std::cout << "13. Сделать ход назад (если предусмотрено правилами)n";
-    std::cout << "14. Завершить ходn";
+    std::cout << "Возможные действия в игре 'Монополия':\n";
+    std::cout << "1. Продать собственность\n";
+    std::cout << "2. Построить дом/отель\n";
+    std::cout << "3. Выйти из тюрьмы\n";
+    std::cout << "4. Остаться в тюрьме\n";
+    std::cout << "5. Объявить банкротствоn\n";
+    std::cout << "6. Сделать предложение другим игрокам\n";
+    std::cout << "7. Применить карточку 'Выход из тюрьмы бесплатно'\n";
+    std::cout << "8. Сделать ход назад (если предусмотрено правилами)\n";
+    std::cout << "9. Завершить ход\n";
 }
 
 void WelcomeThePlayers(std::vector<Player *> players)
