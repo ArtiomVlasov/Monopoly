@@ -4,8 +4,7 @@
 #pragma once
 class Player;
 
-class Game
-{
+class Game {
 public:
     Game(int numPlayers, int numCells);
     void start();
@@ -13,19 +12,17 @@ public:
     void takeTurn();
     int getBoardSize();
     Board getBoard();
-    bool isGameOver() const;
-    bool isGameOver() const;
+    bool isGameOver() const; 
+    void sellProperty(Player* player);
     int getRollDice();
-    void sellProperty(Player *player);
-    int rollDice();
-
+    int rollDice() ;
 private:
     void caseMapToAction(int a);
-    int playerTurn;
     int firstValue;
     int secondValue;
+    int playerTurn;
     std::vector<Player *> players;
-    Board *board;
+    Board* board;
     int numPlayers;
-    void nextPlayer();
+    void nextPlayer();           
 };

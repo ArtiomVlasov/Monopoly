@@ -15,11 +15,13 @@ Game::Game(int numPlayers, int numCells)
     for (int index = 0; index < numPlayers; index++)
     {
         std::cout << "Имя игрока " << index+1 << ": ";
-        scanf("%s", &name);
+        std::cin>>name;
         players.push_back(new Player(name));
-
+        
     }
+    playerTurn = 0;
 }
+
 
 int Game::rollDice()
 {
@@ -31,36 +33,36 @@ int Game::rollDice()
 
 bool Game::isGameOver() const{ // опистаь
     return false;
-}
+}   
 
 void Game::caseMapToAction(int a) {
      switch (a)
     {
     case 1:
-        std::cout << "Вы выбрали: Купить.n";
+        std::cout << "Вы выбрали: Купить\n";
         // players[playerTurn]->buy(); как передать prop?
         break;
     case 2:
-        std::cout << "Вы выбрали: Продать.n";
+        std::cout << "Вы выбрали: Продать\n";
         // Логика продажи
         break;
     case 3:
-        std::cout << "Вы выбрали: Построить дом.n";
+        std::cout << "Вы выбрали: Построить дом\n";
         // Логика постройки дома
         break;
     case 4:
-        std::cout << "Вы выбрали: Собрать аренду.n";
+        std::cout << "Вы выбрали: Собрать аренду\n";
         // Логика сбора аренды
         break;
     case 5:
-        std::cout << "Вы выбрали: Пас.n";
+        std::cout << "Вы выбрали: Пас\n";
         // Логика пропуска хода
         break;
     case 0:
-        std::cout << "Выход из игры.n";
+        std::cout << "Выход из игры\n";
         break;
     default:
-        std::cout << "Неверный выбор, попробуйте снова.n";
+        std::cout << "Неверный выбор, попробуйте снова\n";
         break;
     }
 }
@@ -73,7 +75,7 @@ void Game::start()
         drawBoard();
         for (int i = 0; i < numPlayers; i++)
         {
-            displayPlayerInfo(*players[i]);
+            displayPlayerInfo(players[i]);
         }
         takeTurn();
     }
@@ -83,10 +85,6 @@ void Game::nextPlayer()
 {
     playerTurn++;
     playerTurn %= numPlayers;
-}
-
-int Game::getRollDice(){
-    return firstValue+secondValue;
 }
 
 void Game::takeTurn()
@@ -99,9 +97,9 @@ void Game::takeTurn()
             players[playerTurn]->releaseFromJail();
         }
         else {
-            std::cout << "Вы можете заплатить " << Prison::getJailFee() << "нажмите 1 если хотите 0 если нет";
+            std::cout << "Вы можете заплатить " << Prison::getJailFee() << "нажмите 1 если хотите 0 если нет\n";
             int answer;
-            scanf("%d", &answer);
+            std::cin >> answer;
             if (answer == 1)
             {
                 // players[playerTurn]->pay(Prison::getJailFee());
@@ -111,13 +109,16 @@ void Game::takeTurn()
         }    
     }
     players[playerTurn]->makeMove(firstValue + secondValue); 
-    Cell *cell = board->getCell(players[playerTurn]->getPosition()).get();
+    printf("%d %d\n",firstValue, secondValue );
+    Cell *cell = board->getCell(0).get();
+    //printf("_________________________- %d\n", players[playerTurn]->getPosition());
     cell->defaultAction(players[playerTurn], this);
     displayMenu();
 
     int a;
-    scanf("%d", &a);
+    std::cin>>a;
     caseMapToAction(a);
+    nextPlayer();
 }
 
 int Game::getBoardSize() {
@@ -132,14 +133,18 @@ std::vector<Player *>Game:: getListOfPlayers() {
     return players;
 }
 
+int Game::getRollDice(){
+    return firstValue+secondValue;
+}
+
 void Game::sellProperty(Player* player) {
     int a;
-    scanf("%d", &a);
+    std::cin >> a;
     caseMapToAction(a);
     // if (player->getBalance() < MuchIt) {
     //     while(player->getBalance() < MuchIt) {
     //         int a;
-    //         scanf("%d", &a);
+    //         std::cin("%d", &a);
     //         caseMapToAction(a);
     //     }    
     // }
