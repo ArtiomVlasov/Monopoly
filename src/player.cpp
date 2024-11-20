@@ -2,6 +2,7 @@
 #include "propertySubClasses.hpp"
 #include "cell.hpp"
 
+
 Player::Player(std::string name) : name(name), balance(2000), position(0), inJail(false), bankrupt(false), numMovesInPrison(0), listOfProperty() {}
 
 int Player::getTotalPriceOfProperty()
@@ -137,7 +138,7 @@ bool Player::canBuildOn(Property *property) const
         std::cout << "Улица не принадлежит игроку " << name << ".\n";
         return false;
     }
-    if (!street->isFullListOfProperty(property->getOwner(), street->getType()))
+    if (!street->isFullListOfStreet(this, street->getColor()))// FIXME isFullListOfProperty переопределить в street
     {
         std::cout << "Игрок должен владеть всей цветовой группой, чтобы строить здесь.\n";
         return false;
@@ -155,6 +156,45 @@ bool Player::canBuildOn(Property *property) const
     }
 
     return true;
+}
+
+int Player::getNumberOfHouses() const
+{
+    int houseCount = 0;
+    for (Property *property : listOfProperty)
+    {
+        if (property->isStreet())
+        {
+            Street *street = dynamic_cast<Street *>(property);
+            if (street)
+            {
+                houseCount += street->getLevelOfStreet();
+                if (street->getLevelOfStreet() == 5)
+                {
+                    houseCount -= 1;
+                }
+            }
+        }
+    }
+    return houseCount;
+}
+
+// Метод для подсчета всех отелей у игрока
+int Player::getNumberOfHotels() const
+{
+    int hotelCount = 0;
+    for (Property *property : listOfProperty)
+    {
+        if (property->isStreet())
+        {
+            Street *street = dynamic_cast<Street *>(property);
+            if (street && street->getLevelOfStreet() == 5)
+            {
+                hotelCount += 1;
+            }
+        }
+    }
+    return hotelCount;
 }
 
 void Player::buildStructure(Street *street)
@@ -350,46 +390,6 @@ void Player::moveToNearestStation(Game *game, int posIndex)
     {
         std::cout << "Станции не найдены на игровом поле.\n";
     }
-}
-
-// Метод для подсчета всех домов у игрока
-int Player::getNumberOfHouses() const
-{
-    int houseCount = 0;
-    for (Property *property : listOfProperty)
-    {
-        if (property->isStreet())
-        {
-            Street *street = dynamic_cast<Street *>(property);
-            if (street)
-            {
-                houseCount += street->getLevelOfStreet();
-                if (street->getLevelOfStreet() == 5)
-                {
-                    houseCount -= 1;
-                }
-            }
-        }
-    }
-    return houseCount;
-}
-
-// Метод для подсчета всех отелей у игрока
-int Player::getNumberOfHotels() const
-{
-    int hotelCount = 0;
-    for (Property *property : listOfProperty)
-    {
-        if (property->isStreet())
-        {
-            Street *street = dynamic_cast<Street *>(property);
-            if (street && street->getLevelOfStreet() == 5)
-            {
-                hotelCount += 1;
-            }
-        }
-    }
-    return hotelCount;
 }
 
 void Player::payToExit(int jailFee)

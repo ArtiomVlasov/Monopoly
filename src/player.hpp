@@ -16,13 +16,15 @@ private:
     int balance;
     int position;
     std::vector<Property *> listOfProperty;
-    bool inJail;
+    bool inJail;// перемистить в Prison
     bool bankrupt;
     int totalPriceOfProperty;
     int totalDiceRoll;
     uint8_t numMovesInPrison;
 
 public:
+
+
     enum AffordStatus
     {
         CAN_AFFORD,
@@ -44,7 +46,7 @@ public:
     int getBalance() const;
     int getTotalPriceOfProperty();
     void buy(Property *property);
-    CellType getCellTypeInListOfProperty(int index);
+    //CellType getCellTypeInListOfProperty(int index);
     std::string getName() const;
     int getPosition() const;
     const std::vector<Property *> &getProperties() const;
