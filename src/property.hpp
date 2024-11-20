@@ -31,6 +31,5 @@ public:
     bool isMortgaged();
     int getPrice() const;
     std::string getName() const;
-    bool isFullListOfProperty(Player *player, CellType type);
     bool isStreet();
 };

@@ -122,18 +122,7 @@ void Property::unMortgage(Player *player)
     }
 }
 
-bool Property::isFullListOfProperty(Player *player, CellType type)
-{
-    int countQuantityProperty = 0;
-    for (const Property *property : player->getProperties())
-    {
-        if (property->getType() == type)
-        {
-            countQuantityProperty++;
-        }
-    }
-    return countQuantityProperty == handleCellType(type);
-}
+
 
 int Property::calculateMortgage()
 {
