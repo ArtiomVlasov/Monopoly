@@ -5,14 +5,7 @@ class Player;
 class Game;
 
 enum class CellType { // надо подумать можно ли как-то еще это реализовать
-    RedStreet,
-    YellowStreet,
-    GreenStreet,
-    BlueStreet,
-    BrownStreet,
-    WhiteStreet,
-    PinkStreet,
-    OrangeStreet,
+    Street,
     PropRailway,
     PropUtilities,
     Chance,
@@ -26,6 +19,7 @@ class Cell
 {
 protected:
     CellType type;
+
 public:
     Cell(CellType t);
     virtual void onLand(); // сообщает на какую клетку попал
@@ -33,5 +27,4 @@ public:
     int handleCellType(CellType propertyType);
     virtual void defaultAction(Player *player, Game* game) = 0;
     virtual ~Cell() = default;
-    bool isEmpty();
 };
