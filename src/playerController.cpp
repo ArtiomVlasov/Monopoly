@@ -24,9 +24,18 @@ void playerController::playerAddProperty(Property *property, Player *player)
     player->pushListOfProperty(property);
 }
 
-// void playerController::playerCanAfford(int amount, Player* player) {
-
-// }
+Player::AffordStatus playerController::playerCanAfford(int amount, Player* player)
+{
+    if (amount <= player->getBalance())
+    {
+        return Player::CAN_AFFORD;
+    }
+    if (amount >  player->getBalance() + 0)  //add from prop controller function
+    {
+        return Player::CANNOT_AFFORD;
+    }
+    return Player::NEED_TO_SELL_PROPERTY;
+}
 
 void playerController::playerDeclareBankruptcy(Player *creditor)
 {
@@ -124,7 +133,7 @@ void playerController::playerDestroyStructure(Street *street, Player *player)
     renderPlayerDestroyStructure(street, player, 2);
 }
 
-int playerController::playerMakeBid(int currentHighestBid, Player *player)
+int playerMakeBid(int currentHighestBid, Player *player)
 {
     int bid = 0;
     renderPlayerMakeBid(currentHighestBid, player, 0, bid);
@@ -135,12 +144,12 @@ int playerController::playerMakeBid(int currentHighestBid, Player *player)
         return -1;
     }
 
-    if (bid > currentHighestBid && playerCanAfford(bid, player) == Player::AffordStatus::CAN_AFFORD)
+    if (bid > currentHighestBid && playerController::playerCanAfford(bid, player) == Player::AffordStatus::CAN_AFFORD)
     {
         renderPlayerMakeBid(currentHighestBid, player, 2, bid);
         return bid;
     }
-    else if (bid > currentHighestBid && playerCanAfford(bid, player) == Player::AffordStatus::CANNOT_AFFORD)
+    else if (bid > currentHighestBid && playerController::playerCanAfford(bid, player) == Player::AffordStatus::CANNOT_AFFORD)
     {
         if (player->getBalance() >= currentHighestBid + 10)
         {
@@ -190,7 +199,7 @@ void playerController::playerStartAuction(Property *property, const std::vector<
         {
             if (pl != player)
             {
-                 rednerPlayerStartAuction(1, player, property, highestBid);
+                rednerPlayerStartAuction(1, player, property, highestBid);
 
                 int bid = playerMakeBid(highestBid, pl);
 
