@@ -2,7 +2,7 @@
 #include <vector>
 #include "player.hpp"
 #include "property.hpp"
-
+#include "propertySubClasses.hpp"
 
 std::vector<std::pair<std::string, std::string>> listOFstreets = {
     {"GO", "GO"},
@@ -44,11 +44,9 @@ std::vector<std::pair<std::string, std::string>> listOFstreets = {
     {"Park Place", "PP"},
     {"Luxury Tax", "LT"},
     {"Boardwalk", "BW"},
-    {"Jail (Just Visiting)", "JV"}
-};
+    {"Jail (Just Visiting)", "JV"}};
 
 // Удаляем дубликаты и сортируем по порядку, если необходимо.
-
 
 void drawBoard()
 {
@@ -156,7 +154,7 @@ void RenderCreateCell(std::string s, int flag)
 }
 
 void displayMenu()
-{   
+{
     std::cout << "Возможные действия в игре 'Монополия':\n";
     std::cout << "1. Продать собственность\n";
     std::cout << "2. Построить дом/отель\n";
@@ -177,5 +175,110 @@ void WelcomeThePlayers(std::vector<Player *> players)
     std::cout << "WARNING!!!!Before we start,please make the console window bigger in order to see the whole stuff...Width:140 and Height:60 should be OK!" << std::endl;
     std::cout << "If you have done the previous step,we are about to start" << std::endl;
     std::cout << "____________________________________________________________________________________________________________________" << std::endl;
-    
+}
+
+void renderPayPlayer(Player *player, int amount)
+{
+    std::cout << "С баланса игрока " << player->getName() << " списано " << amount << " монет.\n";
+}
+
+void renderReceivePlayer(Player *player, int amount)
+{
+    std::cout << "Игрок " << player->getName() << " получает " << amount << " монет.\n";
+}
+
+void renderPlayerDeclareBankruptcy(Player *creditor)
+{
+    std::cout << "Игрок " << creditor->getName() << " не может оплатить ренту и объявляет банкротство.\n";
+}
+
+void renderPlayerDeclareBankruptcyIfCreditor(Player *creditor)
+{
+    std::cout << "Его имущество переходит к " << creditor->getName() << ".\n";
+}
+
+void renderPlayerDeclareBankruptcyIfCreditorGetPos(Player *creditor, Property *property)
+{
+    std::cout << property->getName() << " переходит к " << creditor->getName() << ".\n";
+}
+
+void propertyToBank()
+{
+    std::cout << "Его имущество возвращается банку и снова доступно для покупки.\n";
+}
+
+void renderPlayerCanBuildOn(Player *player, int flag)
+{
+    if (flag == 0)
+    {
+        std::cout << "Невозможно построить, так как это не улица.\n";
+    }
+    else if (flag == 1)
+    {
+        std::cout << "Улица не принадлежит игроку " << player->getName() << ".\n";
+    }
+    else if (flag == 2)
+    {
+        std::cout << "Игрок должен владеть всей цветовой группой, чтобы строить здесь.\n";
+    }
+    else if (flag == 3)
+    {
+        std::cout << "Невозможно построить, пока улица заложена.\n";
+    }
+}
+
+void renderPlayerBuildStructure(Street *street, Player *player)
+{
+    std::cout << "Игрок " << player->getName() << " построил здание на \"" << street->getName()
+              << "\". Уровень улицы теперь: " << street->getLevelOfStreet() << ".\n";
+}
+
+void renderPlayerNotBuildStructure(Street *street)
+{
+    std::cout << "Недостаточно средств для строительства на \"" << street->getName() << "\".\n";
+}
+
+void renderPlayerDestroyStructure(Street *street, Player *player, int status)
+{
+    if (status == 0)
+    {
+        std::cout << "Игрок " << player->getName() << " не владеет этой улицей.\n";
+    }
+    if (status == 1)
+    {
+        std::cout << "На улице " << street->getName() << " нет построек для сноса.\n";
+    }
+    if (status == 2)
+    {
+        std::cout << "Игрок " << player->getName() << " снес одну структуру на " << street->getName() << ".\n";
+    }
+}
+
+void renderPlayerMakeBid(int currentHighestBid, Player *player, int status, int bid)
+{
+    switch (status)
+    {
+    case 0:
+        std::cout << player->getName() << ", текущая наивысшая ставка: " << currentHighestBid << ". Введите вашу ставку или -1 для выхода: ";
+        std::cout << "Наименьшая ставка 10М. \n";
+        break;
+    case 1:
+        std::cout << player->getName() << " выходит из аукциона.\n";
+        break;
+    case 2:
+        std::cout << player->getName() << " сделал ставку: " << bid << "\n";
+        break;
+    case 3:
+        std::cout << player->getName() << ", Ваш баланс должен быть не меньше ставки, которую вы хотите сделать. Снизьте ставку.\n";
+        break;
+    case 4:
+        std::cout << "У " << player->getName() << ", не хватает денег, он выходит из аукциона.\n";
+        break;
+    case 5:
+        std::cout << player->getName() << ", Ставка должна быть выше текущей наивысшей ставки.\n";
+        break;
+    default:
+        std::cout << "Неизвестный статус.\n"; 
+        break;
+    }
 }
