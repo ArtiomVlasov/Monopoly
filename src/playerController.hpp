@@ -10,8 +10,9 @@ public:
     void playerPay(int amount, Player* player);
     void playerReceive(int amount, Player* player);
     void playerAddProperty(Property* property, Player* player);
-    void playerCanAfford(int amount, Player* player);
+    Player::AffordStatus playerCanAfford(int amount, Player* player);
     void playerDeclareBankruptcy(Player *creditor);
+    void buy(Property *property); //добавить
     bool playerCanBuildOn(Property* property, Player* player) const;
     void playerBuildStructure(Street* street, Player* player);
     void playerDestroyStructure(Street* steet, Player* player);
