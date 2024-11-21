@@ -16,11 +16,11 @@ public:
     void playerBuildStructure(Street* street, Player* player);
     void playerDestroyStructure(Street* steet, Player* player);
     int playerMakeBid(int currentHighestBid, Player *player);
-    int playerMakeDicision();
-    void playerStartAuction();
-    void playerMortgageProperty(Property* property);
-    void playerUnmortgagedProperty(Property* property);
-    void playerMoveToNearestStation(Game* game, int posIndex);
-    void playerReleaseFromJail();
+    int playerMakeDicision(Player* player);
+    void playerStartAuction(Property *property, const std::vector<Player *> &players, Player* player);
+    void playerMortgageProperty(Property* property, Player* player);
+    void playerUnmortgagedProperty(Property* property, Player* player);
+    void playerMoveToNearestStation(Game* game, int posIndex, Player* player);
+    //void playerReleaseFromJail();
     // void playerSendToJail();
 };
