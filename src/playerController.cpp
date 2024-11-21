@@ -35,7 +35,7 @@ void playerController::playerDeclareBankruptcy(Player *creditor)
     renderPlayerDeclareBankruptcy(creditor);
     if (creditor)
     {
-        std::cout << "Его имущество переходит к " << creditor->getName() << ".\n";
+       renderPlayerDeclareBankruptcyIfCreditor(player)
         for (Property *property : creditor->getListOfProperty())
         {
             creditor->addProperty(property);
@@ -49,7 +49,7 @@ void playerController::playerDeclareBankruptcy(Player *creditor)
         {
             property->markAsAvailable();
         }
-        std::cout << "Его имущество возвращается банку и снова доступно для покупки.\n";
+       propertyToBank();
     }
     std::vector<Property *> A = creditor->getListOfProperty();
     A.clear();
