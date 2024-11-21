@@ -20,9 +20,10 @@ class Prison : public Cell
 private:
     const int callDown;
     static const int jailFee = 100;
-
+    std::vector<Player *> playerPrisonList;
 public:
     Prison();
+    bool playerInPrison(Player* player);
     void onLand() override;
     void defaultAction(Player *player, Game* game) override; // отправить в тюрьму
     static int getJailFee();
