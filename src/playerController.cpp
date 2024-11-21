@@ -30,18 +30,18 @@ void playerController::playerAddProperty(Property *property, Player *player)
 
 void playerController::playerDeclareBankruptcy(Player *creditor)
 {
-    creditor->setBankrupt();
+    Game::addBankruptPlayers(creditor);
 
     renderPlayerDeclareBankruptcy(creditor);
     if (creditor)
     {
-        std::cout << "Его имущество переходит к " << creditor->getName() << ".\n";
+        renderPlayerDeclareBankruptcyIfCreditor(creditor);
         for (Property *property : creditor->getListOfProperty())
         {
-            creditor->addProperty(property);
+            playerAddProperty(property, creditor);
             renderPlayerDeclareBankruptcyIfCreditorGetPos(creditor, property);
         }
-        creditor->receive(creditor->getBalance());
+        playerReceive(creditor->getBalance(), creditor);
     }
     else
     {
@@ -49,7 +49,7 @@ void playerController::playerDeclareBankruptcy(Player *creditor)
         {
             property->markAsAvailable();
         }
-        std::cout << "Его имущество возвращается банку и снова доступно для покупки.\n";
+        propertyToBank();
     }
     std::vector<Property *> A = creditor->getListOfProperty();
     A.clear();
@@ -94,9 +94,9 @@ void playerController::playerBuildStructure(Street *street, Player *player)
 {
     if (playerCanBuildOn(street, player) && player->getBalance() >= street->getBuildingCost())
     {
-        player->pay(street->getBuildingCost());
+        playerPay(street->getBuildingCost(), player);
         street->buildNewHouse();
-
+ 
         renderPlayerBuildStructure(street, player);
     }
     else if (player->getBalance() < street->getBuildingCost())
@@ -135,12 +135,12 @@ int playerController::playerMakeBid(int currentHighestBid, Player *player)
         return -1;
     }
 
-    if (bid > currentHighestBid && player->canAfford(bid) == Player::AffordStatus::CAN_AFFORD)
+    if (bid > currentHighestBid && playerCanAfford(bid, player) == Player::AffordStatus::CAN_AFFORD)
     {
         renderPlayerMakeBid(currentHighestBid, player, 2, bid);
         return bid;
     }
-    else if (bid > currentHighestBid && player->canAfford(bid) == Player::AffordStatus::CANNOT_AFFORD)
+    else if (bid > currentHighestBid && playerCanAfford(bid, player) == Player::AffordStatus::CANNOT_AFFORD)
     {
         if (player->getBalance() >= currentHighestBid + 10)
         {
@@ -194,7 +194,7 @@ void playerController::playerStartAuction(Property *property, const std::vector<
 
                 int bid = playerMakeBid(highestBid, pl);
 
-                if (bid > highestBid && pl->canAfford(bid) == Player::AffordStatus::CAN_AFFORD)
+                if (bid > highestBid && playerCanAfford(bid, pl) == Player::AffordStatus::CAN_AFFORD)
                 {
                     highestBid = bid;
                     highestBidder = pl;
@@ -203,10 +203,10 @@ void playerController::playerStartAuction(Property *property, const std::vector<
             }
         }
     }
-    if (highestBidder)
+    if (highestBidder) 
     {
-        highestBidder->pay(highestBid);
-        highestBidder->addProperty(property);
+        playerPay(highestBid, highestBidder);
+        playerAddProperty(property, highestBidder);
         rednerPlayerStartAuction(2, player, property, highestBid);
 
     }
