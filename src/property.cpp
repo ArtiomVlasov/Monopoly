@@ -1,5 +1,7 @@
 #include "property.hpp"
 #include "player.hpp"
+#include "playerController.hpp"
+#include "TaxPrisonChance.hpp"
 #include <cmath>
 
 Property::Property(CellType type, std::string Name, int Price, int Rent, Player *owner)
@@ -13,7 +15,7 @@ void Property::defaultAction(Player *player, Game *game)
         {
             int rentAmount = calculateRent(player);
 
-            switch (player->canAfford(rentAmount))
+            switch (playerController::playerCanAfford(rentAmount, player))
             {
             case Player::AffordStatus::CAN_AFFORD:
                 std::cout << "Игрок " << player->getName() << " попал на имущество, принадлежащее " << owner->getName()
@@ -30,7 +32,7 @@ void Property::defaultAction(Player *player, Game *game)
 
             case Player::AffordStatus::CANNOT_AFFORD:
                 std::cout << "Игрок " << player->getName() << " не может позволить себе оплатить ренту. Объявляется банкротство.\n";
-                player->declareBankruptcy(owner);
+                playerController::playerDeclareBankruptcy(owner);
                 return;
             }
         }
@@ -40,15 +42,15 @@ void Property::defaultAction(Player *player, Game *game)
             return;
         }
     }
-    else if (player->canAfford(price) == Player::AffordStatus::CANNOT_AFFORD)
+    else if (playerController::playerCanAfford(price, player) == Player::AffordStatus::CANNOT_AFFORD)
     {
         std::cout << "У игрока " << player->getName() << " недостаточно средств для покупки. Имущество отправляется на аукцион.\n";
-        player->startAuction(this, game->getListOfPlayers());
+        playerController::playerStartAuction(this, game->getListOfPlayers(), player);
         return;
     }
     else
     {
-        int ans = player->makeDecision();
+        int ans = playerController::playerMakeDicision(player);
         switch (ans)
         {
         case 0: // может купить
@@ -57,7 +59,7 @@ void Property::defaultAction(Player *player, Game *game)
             break;
         case 1: // аукцион
             std::cout << "Игрок " << player->getName() << " выставляет имущество на аукцион.\n";
-            player->startAuction(this, game->getListOfPlayers());
+            playerController::playerStartAuction(this, game->getListOfPlayers(), player);
             break;
         }
     }
@@ -67,8 +69,8 @@ void Property::payRent(Player *player)
 {
     int amount = calculateRent(player);
     std::cout << "Игрок " << player->getName() << " платит ренту в размере " << amount << " монет игроку " << owner->getName() << ".\n";
-    player->pay(amount);
-    owner->receive(amount);
+    playerController::playerPay(amount, player);
+    playerController::playerReceive(amount, player);
 }
 
 void Property::setOwner(Player *newOwner)
@@ -110,14 +112,14 @@ std::string Property::getName() const
 void Property::mortgage()
 {
     this->isMortgage = true;
-    this->owner->receive(calculateMortgage());
+    playerController::playerReceive(calculateMortgage(), this->owner);
 }
 
 void Property::unMortgage(Player *player)
 {
-    if (!player->isInJail() && !player->isBankrupt() && player->getBalance() >= calculateUnMortgage())
+    if (!Prison::isInJail(player) && !Game::isBankruptPlayer(player) && player->getBalance() >= calculateUnMortgage())
     {
-        player->pay(calculateUnMortgage());
+        playerController::playerPay(calculateUnMortgage(), player);
         this->isMortgage = false;
     }
 }
