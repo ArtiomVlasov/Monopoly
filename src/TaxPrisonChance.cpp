@@ -1,5 +1,6 @@
 #include "TaxPrisonChance.hpp"
 #include "player.hpp"
+#include "playerController.hpp"
 #include <iostream>
 
 Tax::Tax(const int tax) : Cell(CellType::Tax), tax(tax) {}
@@ -17,7 +18,7 @@ int Tax::getTaxAmount() const
 void Tax::defaultAction(Player *player, Game *game)
 {
     std::cout << "Игрок " << player->getName() << " должен заплатить налог в размере " << tax << " монет." << std::endl;
-    Player::AffordStatus affordStatus = player->canAfford(tax);
+    Player::AffordStatus affordStatus = playerCanAfford::playerCanAfford(tax);
     if (affordStatus == Player::AffordStatus::CAN_AFFORD)
     {
         player->pay(tax);
@@ -26,7 +27,7 @@ void Tax::defaultAction(Player *player, Game *game)
     {
         std::cout << "У игрока " << player->getName() << " недостаточно средств на балансе. " << "Необходимо продать имущество для оплаты налога.\n";
 
-        while (player->canAfford(tax) == Player::AffordStatus::NEED_TO_SELL_PROPERTY)
+        while (playerController::canAfford(tax) == Player::AffordStatus::NEED_TO_SELL_PROPERTY)
         {
             game->sellProperty(player); //??????????????????
         }
@@ -34,7 +35,7 @@ void Tax::defaultAction(Player *player, Game *game)
     else
     {
         std::cout << "У игрока " << player->getName() << " недостаточно средств для уплаты налога." << std::endl;
-        player->declareBankruptcy(nullptr);
+        Game::addBankruptPlayers(nullptr);
     }
 }
 
