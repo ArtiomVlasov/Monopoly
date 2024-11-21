@@ -278,7 +278,64 @@ void renderPlayerMakeBid(int currentHighestBid, Player *player, int status, int 
         std::cout << player->getName() << ", Ставка должна быть выше текущей наивысшей ставки.\n";
         break;
     default:
-        std::cout << "Неизвестный статус.\n"; 
+        std::cout << "Неизвестный статус.\n";
         break;
+    }
+}
+
+void renderPlayerMakeDicision(Player *player)
+{
+    std::cout << "Игрок " << player->getName() << ", вы попали на недвижимость.\n";
+    std::cout << "Выберите действие:\n";
+    std::cout << "0 - Купить недвижимость\n";
+    std::cout << "1 - Начать аукцион\n";
+    std::cout << "Введите ваш выбор: ";
+}
+
+void renderPlayerErrirMakeDicision()
+{
+    std::cout << "Неверный выбор. Пожалуйста, введите 0, 1 или 2: ";
+}
+
+void rednerPlayerStartAuction(int status, Player *player, Property *property, int highestBid)
+{
+    switch (status)
+    {
+    case 0:
+        std::cout << "Начинается аукцион за " << property->getName() << " с начальной ценой " << property->getPrice() << "\n";
+        break;
+    case 1:
+        std::cout << player->getName() << ", ваш текущий баланс: " << player->getBalance() << ".\n";
+        break;
+    case 2:
+        std::cout << player->getName() << " выигрывает аукцион и покупает " << property->getName() << " за " << highestBid << "\n";
+        break;
+    case 3:
+        std::cout << "Никто не сделал ставку. Аукцион завершен без победителя.\n";
+        break;
+    default:
+        std::cout << "Неизвестный статус.\n";
+        break;
+    }
+}
+
+void renderpPlayerMortgageProperty(Property *property, Player* player) {
+    std::cout << "Игрок " << player->getName() << " заложил имущество \"" << property->getName()
+              << "\" за " << property->calculateMortgage() << " монет.\n";
+}
+
+
+void renderpPlayerUnmortgageProperty(Property *property, Player* player) {
+    std::cout << "Игрок " << player->getName() << " выкупил имущество \"" << property->getName()
+              << "\" за " << property->calculateUnMortgage() << " монет.\n";
+}
+
+
+void rednerplayerMoveToNearestStation(int status, int position){
+    if (status == 0) {
+         std::cout << "Игрок перемещен на ближайшую станцию на позиции " << position << ".\n";
+    }
+    else {
+         std::cout << "Станции не найдены на игровом поле.\n";
     }
 }
