@@ -20,8 +20,12 @@ class Prison : public Cell
 private:
     const int callDown;
     static const int jailFee = 100;
-    std::vector<Player *> playerPrisonList;
+    static std::vector<Player *> playerPrisonList;
+    uint8_t numMovesInPrison;
 public:
+    uint8_t getNumMovesInPrison(Player* player);
+    void playerReleaseFromJail();
+    static bool isInJail(Player* player);
     Prison();
     bool playerInPrison(Player* player);
     void onLand() override;
