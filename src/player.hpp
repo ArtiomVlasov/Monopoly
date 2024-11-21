@@ -16,7 +16,7 @@ private:
     int balance;
     int position;
     std::vector<Property *> listOfProperty;
-    bool inJail;// перемистить в Prison
+    // bool inJail;// перемистить в Prison
     bool bankrupt;
     int totalPriceOfProperty;
     int totalDiceRoll;
@@ -70,5 +70,10 @@ public:
     int getLastDiceRoll();
     void setDiceRoll(Game *game);
     void payToExit(int jailFee);
+    void setBalance(int amount);
+    void setTotalPriceOfProperty(int price);
+    void setBankrupt();
+    std::vector<Property *> getListOfProperty();
+    void pushListOfProperty(Property* property);
     ~Player();
 };
