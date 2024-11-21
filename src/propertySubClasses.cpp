@@ -92,8 +92,6 @@ int Street::handleCellType(Color color) {
     }
 }
 
-
-
 Street::Color Street::getColor(){
     return color;
 }
