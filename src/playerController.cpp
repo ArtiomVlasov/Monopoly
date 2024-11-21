@@ -35,7 +35,7 @@ void playerController::playerDeclareBankruptcy(Player *creditor)
     renderPlayerDeclareBankruptcy(creditor);
     if (creditor)
     {
-       renderPlayerDeclareBankruptcyIfCreditor(player)
+        std::cout << "Его имущество переходит к " << creditor->getName() << ".\n";
         for (Property *property : creditor->getListOfProperty())
         {
             creditor->addProperty(property);
@@ -49,7 +49,7 @@ void playerController::playerDeclareBankruptcy(Player *creditor)
         {
             property->markAsAvailable();
         }
-       propertyToBank();
+        std::cout << "Его имущество возвращается банку и снова доступно для покупки.\n";
     }
     std::vector<Property *> A = creditor->getListOfProperty();
     A.clear();
@@ -159,3 +159,103 @@ int playerController::playerMakeBid(int currentHighestBid, Player *player)
         return playerMakeBid(currentHighestBid, player);
     }
 }
+
+
+int playerController::playerMakeDicision(Player* player) {
+    int decision;
+    renderPlayerMakeDicision(player);
+    std::cin >> decision;
+
+    while (decision < 0 || decision > 2)
+    {
+        renderPlayerErrirMakeDicision();
+        std::cin >> decision;
+    }
+
+    return decision;
+}
+
+void playerController::playerStartAuction(Property *property, const std::vector<Player *> &players, Player* player)
+{
+    int highestBid = 0;
+    Player *highestBidder = nullptr;
+    rednerPlayerStartAuction(0, player, property, highestBid);
+
+    bool auctionActive = true;
+    while (auctionActive)
+    {
+        auctionActive = false;
+
+        for (Player *pl : players)
+        {
+            if (pl != player)
+            {
+                 rednerPlayerStartAuction(1, player, property, highestBid);
+
+                int bid = playerMakeBid(highestBid, pl);
+
+                if (bid > highestBid && pl->canAfford(bid) == Player::AffordStatus::CAN_AFFORD)
+                {
+                    highestBid = bid;
+                    highestBidder = pl;
+                    auctionActive = true;
+                }
+            }
+        }
+    }
+    if (highestBidder)
+    {
+        highestBidder->pay(highestBid);
+        highestBidder->addProperty(property);
+        rednerPlayerStartAuction(2, player, property, highestBid);
+
+    }
+    else
+    {
+        rednerPlayerStartAuction(3, player, property, highestBid);
+    }
+}
+
+void playerController::playerMortgageProperty(Property *property, Player* player)
+{
+    property->mortgage();
+    renderpPlayerMortgageProperty(property, player);
+    player->setBalance(-property->calculateMortgage());
+
+}
+
+void playerController::playerUnmortgagedProperty(Property* property,  Player* player) {
+    property->unMortgage(player);
+    renderpPlayerUnmortgageProperty(property, player);
+    player->setBalance(property->calculateMortgage());
+}
+
+void playerController::playerMoveToNearestStation(Game *game, int posIndex, Player* player)
+{
+    int nearestStationPosition = -1;
+    int minDistance = game->getBoardSize();
+
+    for (const auto &cell : game->getBoard().getAllCells())
+    {
+        if (cell->getType() == CellType::PropRailway)
+        {
+            int distance = std::abs(player->getPosition());
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearestStationPosition = posIndex;
+            }
+        }
+    }
+
+    if (nearestStationPosition != -1)
+    {
+        player->setPosition(nearestStationPosition);
+        rednerplayerMoveToNearestStation(0, player->getPosition());
+    }
+    else
+    {
+       rednerplayerMoveToNearestStation(1, 0);
+    }
+}
+
