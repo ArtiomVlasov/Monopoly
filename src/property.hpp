@@ -30,6 +30,7 @@ public:
     void markAsAvailable();
     bool isMortgaged();
     int getPrice() const;
+    int getTotalPriceOfProperty(Player* player);
     std::string getName() const;
     bool isStreet();
 };
