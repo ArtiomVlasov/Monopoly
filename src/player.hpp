@@ -1,75 +1,32 @@
-
-#include <string>
 #include <vector>
-#include <cstdint>
-
+#include <memory>
+#include "board.hpp"
 #pragma once
-class Street;
-class Property;
-class Game;
-enum class CellType;
+class Player;
 
-class Player
-{
-private:
-    std::string name;
-    int balance;
-    int position;
-    std::vector<Property *> listOfProperty;
-    int totalPriceOfProperty;
-    // int totalDiceRoll;
-
-
+class Game {
 public:
 
-    enum AffordStatus
-    {
-        CAN_AFFORD,
-        NEED_TO_SELL_PROPERTY,
-        CANNOT_AFFORD
-    };
-
-    Player(std::string name);
-    Player();
-    //void setInJael(bool flag); //????????????????????????
-    //void makeMove(int steps);
-    void setPosition(int pos);
-    //void addProperty(Property *property);
-    //void pay(int amount);
-    //void receive(int amount);
-    //AffordStatus canAfford(int amount);
-    // void mortgageProperty(Property *property);
-    // void unmortgagedProperty(Property *property);
-    int getBalance() const;
-    int getTotalPriceOfProperty();
-    void buy(Property *property);
-    //CellType getCellTypeInListOfProperty(int index);
-    std::string getName() const;
-    int getPosition() const;
-    const std::vector<Property *> &getProperties() const;
-    int getQuantityOfProperty();
-    // bool isBankrupt() const;
-    // bool isInJail() const;
-    // void sendToJail();
-    // void releaseFromJail();
-    bool canBuildOn(Property *property) const;
-    // void buildStructure(Street *property);
-    // void destroyStructure(Street *street);
-    // int getNumMovesInPrison();
-    // void incrementNumMovesInPrison();
-    //void declareBankruptcy(Player *creditor = nullptr);
-    // int makeDecision();
-    // void startAuction(Property *property, const std::vector<Player *> &players);
-    // void moveToNearestStation(Game *game, int posIndex);
-    int getNumberOfHouses() const;
-    int getNumberOfHotels() const;
-    int getOwnedPropertyCount(CellType type);
-
-    void payToExit(int jailFee);
-    void setBalance(int amount);
-    void setTotalPriceOfProperty(int price);
-    //void setBankrupt();
-    std::vector<Property *> getListOfProperty();
-    void pushListOfProperty(Property* property);
-    ~Player();
+    Game(int numPlayers, int numCells);
+    void start();
+    std::vector<Player *> getListOfPlayers();
+    void takeTurn();
+    int getBoardSize();
+    Board getBoard();
+    bool isGameOver() const; 
+    void sellProperty(Player* player);
+    int getRollDice();
+    int rollDice();
+    static bool isBankruptPlayer(Player* player);
+    static void addBankruptPlayers(Player* player);
+private:
+    static std::vector<Player *> bankruptPlayers;
+    void caseMapToAction(int a);
+    int firstValue;
+    int secondValue;
+    int playerTurn;
+    std::vector<Player *> players;
+    Board* board;
+    int numPlayers;
+    void nextPlayer();           
 };
