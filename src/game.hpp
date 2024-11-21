@@ -15,8 +15,11 @@ public:
     bool isGameOver() const; 
     void sellProperty(Player* player);
     int getRollDice();
-    int rollDice() ;
+    int rollDice();
+    static bool isBankruptPlayer(Player* player);
+    static void addBankruptPlayers(Player* player);
 private:
+    static std::vector<Player *> bankruptPlayers;
     void caseMapToAction(int a);
     int firstValue;
     int secondValue;
