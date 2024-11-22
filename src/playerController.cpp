@@ -1,51 +1,54 @@
 #include "playerController.hpp"
+#include "propertyController.hpp"
+#include "propertySubClassesController.hpp"
+
+playerController::playerController(Player *player):player(player){}
 
 void playerController::playerMakeMove(int steps, Player *player)
 {
     player->setPosition((player->getPosition() + steps) % 40);
 }
 
-void playerController::playerPay(int amount, Player *player)
+void playerController::playerPay(int amount, Player *Iplayer)
 {
-    renderPayPlayer(player, amount);
-    player->setBalance(-amount);
+    renderPayPlayer(Iplayer, amount);
+    Iplayer->setBalance(Iplayer->getBalance() - amount);
 }
 
-void playerController::playerReceive(int amount, Player *player)
+void playerController::playerReceive(int amount, Player* Iplayer)
 {
-    renderReceivePlayer(player, amount);
-    player->setBalance(amount);
+    renderReceivePlayer(Iplayer, amount);
+    Iplayer->setBalance(Iplayer->getBalance() -amount);
 }
 
-void playerController::playerAddProperty(Property *property, Player *player)
+void playerController::playerAddProperty(Property *property, Player* Iplayer)
 {
-    player->setTotalPriceOfProperty(property->calculateMortgage());
-    property->setOwner(player);
-    player->pushListOfProperty(property);
+    property->setOwner(Iplayer);
+    Iplayer->pushListOfProperty(property);
 }
 
-Player::AffordStatus playerController::playerCanAfford(int amount, Player* player)
+playerController::AffordStatus playerController::playerCanAfford(int amount, Player *Iplayer)
 {
-    if (amount <= player->getBalance())
+    if (amount <= Iplayer->getBalance())
     {
-        return Player::CAN_AFFORD;
+        return playerController::CAN_AFFORD;
     }
-    if (amount >  player->getBalance() + 0)  //add from prop controller function
+    if (amount >  Iplayer->getBalance() + PropertyController::getTotalPriceOfProperty(Iplayer))  //FIXED add from prop controller function
     {
-        return Player::CANNOT_AFFORD;
+        return playerController::CANNOT_AFFORD;
     }
-    return Player::NEED_TO_SELL_PROPERTY;
+    return playerController::NEED_TO_SELL_PROPERTY;
 }
 
-void playerController::playerDeclareBankruptcy(Player *creditor)
+void playerController::playerDeclareBankruptcy(Player *creditor, Player *Iplayer)
 {
-    Game::addBankruptPlayers(creditor);
+    Game::addBankruptPlayers(Iplayer);
 
-    renderPlayerDeclareBankruptcy(creditor);
+    renderPlayerDeclareBankruptcy(Iplayer);
     if (creditor)
     {
         renderPlayerDeclareBankruptcyIfCreditor(creditor);
-        for (Property *property : creditor->getListOfProperty())
+        for (Property *property : Iplayer->getListOfProperty())
         {
             playerAddProperty(property, creditor);
             renderPlayerDeclareBankruptcyIfCreditorGetPos(creditor, property);
@@ -56,7 +59,7 @@ void playerController::playerDeclareBankruptcy(Player *creditor)
     {
         for (Property *property : creditor->getListOfProperty())
         {
-            property->markAsAvailable();
+            PropertyController::markAsAvailable(property);
         }
         propertyToBank();
     }
@@ -65,7 +68,7 @@ void playerController::playerDeclareBankruptcy(Player *creditor)
     creditor->setPosition(0);
 }
 
-bool playerController::playerCanBuildOn(Property *property, Player *player) const
+bool playerController::playerCanBuildOn(Property *property, StreetController *streetCntl) const
 {
     Street *street = dynamic_cast<Street *>(property);
     if (!street)
@@ -79,7 +82,7 @@ bool playerController::playerCanBuildOn(Property *property, Player *player) cons
         renderPlayerCanBuildOn(player, 1);
         return false;
     }
-    if (!street->isFullListOfStreet(player, street->getColor())) // FIXME isFullListOfProperty переопределить в street
+    if (!streetCntl->isFullListOfStreet(player, street->getColor())) // FIXME isFullListOfProperty переопределить в street
     {
         renderPlayerCanBuildOn(player, 2);
         return false;
@@ -99,22 +102,22 @@ bool playerController::playerCanBuildOn(Property *property, Player *player) cons
     return true;
 }
 
-void playerController::playerBuildStructure(Street *street, Player *player)
+void playerController::playerBuildStructure(Street *street, StreetController *streetCntl)
 {
-    if (playerCanBuildOn(street, player) && player->getBalance() >= street->getBuildingCost())
+    if (playerCanBuildOn(street, streetCntl) && player->getBalance() >= streetCntl->getBuildingCost())
     {
-        playerPay(street->getBuildingCost(), player);
-        street->buildNewHouse();
+        playerPay(streetCntl->getBuildingCost(), player);
+        streetCntl->buildNewHouse();
  
         renderPlayerBuildStructure(street, player);
     }
-    else if (player->getBalance() < street->getBuildingCost())
+    else if (player->getBalance() < streetCntl->getBuildingCost())
     {
         renderPlayerNotBuildStructure(street);
     }
 }
 
-void playerController::playerDestroyStructure(Street *street, Player *player)
+void playerController::playerDestroyStructure(Street *street, StreetController *streetCntl)
 {
     if (street->getOwner() != player)
     { // хз надо здесь проверять это
@@ -129,50 +132,50 @@ void playerController::playerDestroyStructure(Street *street, Player *player)
     }
 
     // Снос здания
-    street->demolishHouse();
+    streetCntl->demolishHouse();
     renderPlayerDestroyStructure(street, player, 2);
 }
 
-int playerMakeBid(int currentHighestBid, Player *player)
+int playerController::playerMakeBid(int currentHighestBid, Player *Iplayer)
 {
     int bid = 0;
-    renderPlayerMakeBid(currentHighestBid, player, 0, bid);
+    renderPlayerMakeBid(currentHighestBid, Iplayer, 0, bid);
     std::cin >> bid; // не знаю наверно верно
     if (bid < 0)
     {
-        renderPlayerMakeBid(currentHighestBid, player, 1, bid);
+        renderPlayerMakeBid(currentHighestBid, Iplayer, 1, bid);
         return -1;
     }
 
-    if (bid > currentHighestBid && playerController::playerCanAfford(bid, player) == Player::AffordStatus::CAN_AFFORD)
+    if (bid > currentHighestBid && playerCanAfford(bid, Iplayer) == playerController::AffordStatus::CAN_AFFORD)
     {
-        renderPlayerMakeBid(currentHighestBid, player, 2, bid);
+        renderPlayerMakeBid(currentHighestBid, Iplayer, 2, bid);
         return bid;
     }
-    else if (bid > currentHighestBid && playerController::playerCanAfford(bid, player) == Player::AffordStatus::CANNOT_AFFORD)
+    else if (bid > currentHighestBid && playerCanAfford(bid, Iplayer) == playerController::AffordStatus::CANNOT_AFFORD)
     {
-        if (player->getBalance() >= currentHighestBid + 10)
+        if (Iplayer->getBalance() >= currentHighestBid + 10)
         {
-            renderPlayerMakeBid(currentHighestBid, player, 3, bid);
-            return playerMakeBid(currentHighestBid, player);
+            renderPlayerMakeBid(currentHighestBid, Iplayer, 3, bid);
+            return playerMakeBid(currentHighestBid, Iplayer);
         }
         else
         {
-            renderPlayerMakeBid(currentHighestBid, player, 4, bid);
+            renderPlayerMakeBid(currentHighestBid, Iplayer, 4, bid);
             return -1;
         }
     }
     else
     {
-        renderPlayerMakeBid(currentHighestBid, player, 5, bid);
-        return playerMakeBid(currentHighestBid, player);
+        renderPlayerMakeBid(currentHighestBid, Iplayer, 5, bid);
+        return playerMakeBid(currentHighestBid, Iplayer);
     }
 }
 
 
-int playerController::playerMakeDicision(Player* player) {
+int playerController::playerMakeDicision(Player *Iplayer) {
     int decision;
-    renderPlayerMakeDicision(player);
+    renderPlayerMakeDicision(Iplayer);
     std::cin >> decision;
 
     while (decision < 0 || decision > 2)
@@ -184,11 +187,11 @@ int playerController::playerMakeDicision(Player* player) {
     return decision;
 }
 
-void playerController::playerStartAuction(Property *property, const std::vector<Player *> &players, Player* player)
+void playerController::playerStartAuction(Property *property, const std::vector<Player *> &players, Player *Iplayer)
 {
     int highestBid = 0;
     Player *highestBidder = nullptr;
-    rednerPlayerStartAuction(0, player, property, highestBid);
+    rednerPlayerStartAuction(0, Iplayer, property, highestBid);
 
     bool auctionActive = true;
     while (auctionActive)
@@ -197,13 +200,13 @@ void playerController::playerStartAuction(Property *property, const std::vector<
 
         for (Player *pl : players)
         {
-            if (pl != player)
+            if (pl != Iplayer)
             {
-                rednerPlayerStartAuction(1, player, property, highestBid);
+                rednerPlayerStartAuction(1, Iplayer, property, highestBid);
 
-                int bid = playerMakeBid(highestBid, pl);
+                int bid = playerMakeBid(highestBid, Iplayer);
 
-                if (bid > highestBid && playerCanAfford(bid, pl) == Player::AffordStatus::CAN_AFFORD)
+                if (bid > highestBid && playerCanAfford(bid, Iplayer) == playerController::AffordStatus::CAN_AFFORD)
                 {
                     highestBid = bid;
                     highestBidder = pl;
@@ -214,32 +217,32 @@ void playerController::playerStartAuction(Property *property, const std::vector<
     }
     if (highestBidder) 
     {
-        playerPay(highestBid, highestBidder);
+        playerPay(highestBid, Iplayer);
         playerAddProperty(property, highestBidder);
-        rednerPlayerStartAuction(2, player, property, highestBid);
+        rednerPlayerStartAuction(2, Iplayer, property, highestBid);
 
     }
     else
     {
-        rednerPlayerStartAuction(3, player, property, highestBid);
+        rednerPlayerStartAuction(3, Iplayer, property, highestBid);
     }
 }
 
-void playerController::playerMortgageProperty(Property *property, Player* player)
+void playerController::playerMortgageProperty(Property *property, PropertyController *propCntl)
 {
-    property->mortgage();
+    propCntl->mortgageProperty(player);
     renderpPlayerMortgageProperty(property, player);
-    player->setBalance(-property->calculateMortgage());
+    player->setBalance(PropertyController::calculateMortgage(property));
 
 }
 
-void playerController::playerUnmortgagedProperty(Property* property,  Player* player) {
-    property->unMortgage(player);
+void playerController::playerUnmortgagedProperty(Property* property, PropertyController *propCntl) {
+    propCntl->unMortgageProperty(player);
     renderpPlayerUnmortgageProperty(property, player);
-    player->setBalance(property->calculateMortgage());
+    player->setBalance(PropertyController::calculateMortgage(property));
 }
 
-void playerController::playerMoveToNearestStation(Game *game, int posIndex, Player* player)
+void playerController::playerMoveToNearestStation(Game *game, int posIndex)
 {
     int nearestStationPosition = -1;
     int minDistance = game->getBoardSize();
@@ -268,3 +271,22 @@ void playerController::playerMoveToNearestStation(Game *game, int posIndex, Play
     }
 }
 
+int playerController::getOwnedPropertyCount(CellType type, Player *player)
+{
+    int countQuantityProperty = 0;
+    for (const Property *property : player->getListOfProperty())
+    {
+        if (property->getType() == type)
+        {
+            countQuantityProperty++;
+        }
+    }
+    return countQuantityProperty;
+}
+
+ void playerController::playerBuy(Property *property, Player *Iplayer)
+ {
+     playerPay(property->getPrice(), Iplayer);
+
+     playerAddProperty(property, Iplayer);
+ }
