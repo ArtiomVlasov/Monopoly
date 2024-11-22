@@ -1,6 +1,7 @@
 #include "cell.hpp"
 #include <functional>
 #include "game.hpp"
+#include <map>
 #pragma once
 class Tax : public Cell
 {
@@ -20,18 +21,20 @@ class Prison : public Cell
 private:
     const int callDown;
     static const int jailFee = 100;
-    static std::vector<Player *> playerPrisonList;
-    uint8_t numMovesInPrison;
+    std::map<Player *, uint8_t> playerPrisonList;
 public:
     uint8_t getNumMovesInPrison(Player* player);
-    void playerReleaseFromJail();
-    static bool isInJail(Player* player);
+    int getCallDown();
+    // void addPlayerInPrison(Player *player);
+    std::map<Player *, uint8_t> getPrisonList();
+    //void playerReleaseFromJail();
+    //static bool isInJail(Player* player);
     Prison();
-    bool playerInPrison(Player* player);
-    void onLand() override;
-    void defaultAction(Player *player, Game* game) override; // отправить в тюрьму
-    static int getJailFee();
-    void payToExit(Player* player);
+    void defaultAction(Player *player, Game* game) override;
+    //bool playerInPrison(Player* player);
+    void onLand() override; //FIXME хуй знает что с этим делать    void defaultAction(Player *player, Game* game) override; // отправить в тюрьму
+    int getJailFee();
+    //void payToExit(Player* player);
     ~Prison();
 };
 
@@ -44,7 +47,7 @@ private:
 
 public:
     Chance(Game *game);
-    void initializeEffects(Game *game);
+    //void initializeEffects(Game *game);
     void defaultAction(Player *player, Game* game) override;
 };
 

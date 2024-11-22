@@ -1,6 +1,7 @@
 #include "TaxPrisonChance.hpp"
 #include "player.hpp"
 #include "playerController.hpp"
+#include "prisonController.hpp"
 #include <iostream>
 
 Tax::Tax(const int tax) : Cell(CellType::Tax), tax(tax) {}
@@ -18,16 +19,16 @@ int Tax::getTaxAmount() const
 void Tax::defaultAction(Player *player, Game *game)
 {
     std::cout << "Игрок " << player->getName() << " должен заплатить налог в размере " << tax << " монет." << std::endl;
-    Player::AffordStatus affordStatus = playerCanAfford::playerCanAfford(tax);
-    if (affordStatus == Player::AffordStatus::CAN_AFFORD)
+    playerController::AffordStatus affordStatus = playerController::playerCanAfford(tax, player);
+    if (affordStatus == playerController::AffordStatus::CAN_AFFORD)
     {
-        player->pay(tax);
+        playerController::playerPay(tax, player);
     }
-    else if (affordStatus == Player::AffordStatus::NEED_TO_SELL_PROPERTY)
+    else if (affordStatus == playerController::AffordStatus::NEED_TO_SELL_PROPERTY)
     {
         std::cout << "У игрока " << player->getName() << " недостаточно средств на балансе. " << "Необходимо продать имущество для оплаты налога.\n";
 
-        while (playerController::canAfford(tax) == Player::AffordStatus::NEED_TO_SELL_PROPERTY)
+        while (playerController::playerCanAfford(tax, player) == playerController::AffordStatus::NEED_TO_SELL_PROPERTY)
         {
             game->sellProperty(player); //??????????????????
         }
@@ -51,7 +52,7 @@ void Prison::onLand()
 void Prison::defaultAction(Player *player, Game *game)
 {
     std::cout << "Игрок " << player->getName() << " отправляется в тюрьму." << std::endl;
-    player->sendToJail();
+    prisonController::addPlayerInPrison(player, this);
 }
 
 int Prison::getJailFee()
@@ -59,19 +60,19 @@ int Prison::getJailFee()
     return jailFee;
 }
 
-void Prison::payToExit(Player *player)
-{
-    if (player->canAfford(jailFee) == Player::AffordStatus::CAN_AFFORD)
-    {
-        std::cout << "Игрок " << player->getName() << " заплатил " << jailFee << " монет для выхода из тюрьмы." << std::endl;
-        player->pay(jailFee);
-        player->releaseFromJail();
-    }
-    else
-    {
-        std::cout << "У игрока " << player->getName() << " недостаточно средств, чтобы выйти из тюрьмы." << std::endl;
-    }
-}
+// void Prison::payToExit(Player *player)
+// {
+//     if (playerController::playerCanAfford(jailFee, player) == Player::AffordStatus::CAN_AFFORD)
+//     {
+//         std::cout << "Игрок " << player->getName() << " заплатил " << jailFee << " монет для выхода из тюрьмы." << std::endl;
+//         playerController::playerPay(jailFee);
+//         preleaseFromJail();
+//     }
+//     else
+//     {
+//         std::cout << "У игрока " << player->getName() << " недостаточно средств, чтобы выйти из тюрьмы." << std::endl;
+//     }
+// }
 
 Prison::~Prison() {}
 
@@ -95,7 +96,7 @@ void Chance::initializeEffects()
                 player->moveToNearestStation(this->game, 23);
             } 
             else if (player->getPosition() == 36) {
-                 player->moveToNearestStation(this->game, 36);
+                 playerController::playerMoveToNearestStation(this->game, 36); // FIXME тоже чё то надо думать
             }
         },
         // Премия за победу в конкурсе
@@ -103,20 +104,20 @@ void Chance::initializeEffects()
         {
             int prize = 200;
             std::cout << player->getName() << " получает " << prize << " монет за победу в конкурсе красоты.\n";
-            player->receive(prize);
+            playerController::playerReceive(prize, player);
         },
         // Оплата налога
         [](Player *player)
         {
             int tax = 100;
             std::cout << player->getName() << " должен заплатить налог в размере " << tax << " монет.\n";
-            player->pay(tax);
+            playerController::playerPay(tax, player);
         },
         // Отправка в тюрьму
         [](Player *player)
         {
             std::cout << player->getName() << " отправляется в тюрьму.\n";
-            player->sendToJail();
+            player->sendToJail(); //FIXME таже самая проблема что и в treasure
         },
         // Плата за ремонт построек
         [](Player *player)
@@ -125,13 +126,13 @@ void Chance::initializeEffects()
             int hotelFee = 115;
             int totalFee = player->getNumberOfHouses() * houseFee + player->getNumberOfHotels() * hotelFee;
             std::cout << player->getName() << " платит " << totalFee << " монет за ремонт построек.\n";
-            player->pay(totalFee);
+            playerController::playerPay(totalFee, player);
         },
         [](Player *player)
         {
             std::cout << player->getName() << " перемещается на старт и получает 200 монет.\n";
             player->setPosition(0);
-            player->receive(200);
+            playerController::playerReceive(200, player);
         }};
 }
 
@@ -155,24 +156,24 @@ void PublicTreasury::initializeActions() {
         [](Player* player) {
             int amount = 100;
             std::cout << player->getName() << " получает " << amount << " монет из Общественной казны.\n";
-            player->receive(amount);
+            playerController::playerReceive(amount, player);
         },
         
         [](Player* player) {
             int tax = 50;
             std::cout << player->getName() << " должен заплатить налог в размере " << tax << " монет.\n";
-            player->pay(tax);
+            playerController::playerPay(tax, player);
         },
         
         [](Player* player) {
             int steps = 3;
             std::cout << player->getName() << " продвигается на " << steps << " клетки вперёд.\n";
-            player->makeMove(steps);
+            playerController::playerMakeMove(steps, player); //FIXME перенести к контроллер?
         },
         
         [](Player* player) {
             std::cout << player->getName() << " отправляется в тюрьму.\n";
-            player->sendToJail();
+            prisonController::addPlayerInPrison(player, );//FIXME бля походу надо либо класс Prison делать статиком либо надо дуумать 
         },
         
         [](Player* player) {
@@ -180,19 +181,19 @@ void PublicTreasury::initializeActions() {
             int hotelFee = 115;
             int totalFee = player->getNumberOfHouses() * houseFee + player->getNumberOfHotels() * hotelFee;
             std::cout << player->getName() << " платит " << totalFee << " монет за ремонт построек.\n";
-            player->pay(totalFee);
+            playerController::playerPay(totalFee, player);
         },
         
         [](Player* player) {
             int reward = 200;
             std::cout << player->getName() << " получает награду в размере " << reward << " монет.\n";
-            player->receive(reward);
+            playerController::playerReceive(reward, player);
         },
         
         [](Player* player) {
             int refund = 20;
             std::cout << player->getName() << " получает возврат налогов в размере " << refund << " монет.\n";
-            player->receive(refund);
+            playerController::playerReceive(refund, player);
         }
     };
 }
