@@ -16,18 +16,18 @@ private:
     int balance;
     int position;
     std::vector<Property *> listOfProperty;
-    int totalPriceOfProperty;
+//    int totalPriceOfProperty;
     // int totalDiceRoll;
 
 
 public:
 
-    enum AffordStatus
-    {
-        CAN_AFFORD,
-        NEED_TO_SELL_PROPERTY,
-        CANNOT_AFFORD
-    };
+    // enum AffordStatus
+    // {
+    //     CAN_AFFORD,
+    //     NEED_TO_SELL_PROPERTY,
+    //     CANNOT_AFFORD
+    // };
 
     Player(std::string name);
     Player();
@@ -41,18 +41,17 @@ public:
     // void mortgageProperty(Property *property);
     // void unmortgagedProperty(Property *property);
     int getBalance() const;
-    int getTotalPriceOfProperty();
-    void buy(Property *property);
+    //int getTotalPriceOfProperty();
+    //void buy(Property *property);
     //CellType getCellTypeInListOfProperty(int index);
     std::string getName() const;
     int getPosition() const;
     const std::vector<Property *> &getProperties() const;
-    int getQuantityOfProperty();
     // bool isBankrupt() const;
     // bool isInJail() const;
     // void sendToJail();
     // void releaseFromJail();
-    bool canBuildOn(Property *property) const;
+    //bool canBuildOn(Property *property) const;
     // void buildStructure(Street *property);
     // void destroyStructure(Street *street);
     // int getNumMovesInPrison();
@@ -63,11 +62,10 @@ public:
     // void moveToNearestStation(Game *game, int posIndex);
     int getNumberOfHouses() const;
     int getNumberOfHotels() const;
-    int getOwnedPropertyCount(CellType type);
+    //int getOwnedPropertyCount(CellType type);
 
-    void payToExit(int jailFee);
+    void payToExit(int jailFee); //FIXME тоже убрать в Prison 
     void setBalance(int amount);
-    void setTotalPriceOfProperty(int price);
     //void setBankrupt();
     std::vector<Property *> getListOfProperty();
     void pushListOfProperty(Property* property);

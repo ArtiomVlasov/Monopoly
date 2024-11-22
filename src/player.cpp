@@ -2,7 +2,6 @@
 #include "propertySubClasses.hpp"
 #include "cell.hpp"
 
-
 Player::Player(std::string name) : name(name), balance(2000), position(0), listOfProperty() {}
 
 // int Player::getTotalPriceOfProperty()
@@ -163,16 +162,14 @@ int Player::getNumberOfHouses() const
     int houseCount = 0;
     for (Property *property : listOfProperty)
     {
-        if (property->isStreet())
+
+        Street *street = dynamic_cast<Street *>(property);
+        if (street)
         {
-            Street *street = dynamic_cast<Street *>(property);
-            if (street)
+            houseCount += street->getLevelOfStreet();
+            if (street->getLevelOfStreet() == 5)
             {
-                houseCount += street->getLevelOfStreet();
-                if (street->getLevelOfStreet() == 5)
-                {
-                    houseCount -= 1;
-                }
+                houseCount -= 1;
             }
         }
     }
@@ -185,13 +182,11 @@ int Player::getNumberOfHotels() const
     int hotelCount = 0;
     for (Property *property : listOfProperty)
     {
-        if (property->isStreet())
+
+        Street *street = dynamic_cast<Street *>(property);
+        if (street && street->getLevelOfStreet() == 5)
         {
-            Street *street = dynamic_cast<Street *>(property);
-            if (street && street->getLevelOfStreet() == 5)
-            {
-                hotelCount += 1;
-            }
+            hotelCount += 1;
         }
     }
     return hotelCount;
@@ -236,8 +231,6 @@ int Player::getNumberOfHotels() const
 // {
 //     numMovesInPrison++;
 // }
-
-
 
 // int makeBid(int currentHighestBid, Player *player)
 // {
@@ -352,7 +345,6 @@ int Player::getNumberOfHotels() const
 
 // void Player::unmortgagedProperty(Property *property)
 // {
-   
 
 //     property->unMortgage(this);
 //     std::cout << "Игрок " << name << " выкупил имущество \"" << property->getName()
@@ -394,7 +386,7 @@ void Player::payToExit(int jailFee)
     printf("S"); // ????????????????
 }
 
-int Player::getOwnedPropertyCount(CellType type)
+/*int Player::getOwnedPropertyCount(CellType type)
 {
     int countQuantityProperty = 0;
     for (const Property *property : listOfProperty)
@@ -405,7 +397,7 @@ int Player::getOwnedPropertyCount(CellType type)
         }
     }
     return countQuantityProperty;
-}
+}*/
 
 // int Player::getLastDiceRoll()
 // {
