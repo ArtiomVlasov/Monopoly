@@ -1,14 +1,14 @@
 #include "propertySubClasses.hpp"
+#include "game.hpp"
+#include "propertySubClassesController.hpp"
 #include "player.hpp"
 
 Railway::Railway(std::string name, int price, int rent)
     : Property(CellType::PropRailway, name, price, rent, nullptr) {}
 
-int Railway::calculateRent(Player *player)
+int Railway::getTotalRent(Player *player)
 {
-    int baseRent = getRent();
-    int ownedStations = player->getOwnedPropertyCount(CellType::PropRailway);
-    return baseRent * ownedStations; // рента увеличивается вдвое за каждую станцию
+    return RailwayController::calculateRent(player, this);
 }
 
 Railway::~Railway() {}
@@ -16,32 +16,22 @@ Railway::~Railway() {}
 Utilities::Utilities(std::string name, int price, int rent)
     : Property(CellType::PropUtilities, name, price, rent, nullptr) {}
 
-int Utilities::calculateRent(Player *player)
+int Utilities::getTotalRent(Player *player)
 {
-    int diceRoll = player->getLastDiceRoll();
-    int owned = player->getOwnedPropertyCount(CellType::PropUtilities);
-    int multiplier = 0;
-    if (owned == 1){
-        multiplier = 4;
-    }
-    else if (owned == 2){
-        multiplier = 10;
-    }
-    return diceRoll * multiplier;
+    return UtilitiesController::calculateRent(player, this);
 }
 
 Utilities::~Utilities() {}
 
-int Street::calculateRent(Player *player)
+int Street::getTotalRent(Player *player)
 {
-    int baseRent = getRent();
-    return baseRent * (1 + level); // Рента увеличивается с уровнем застройки
+    return StreetController::calculateRent(player, this);
 }
 
 Street::Street(std::string name, int price, int rent, Color color)
     : Property(CellType::Street, name, price, rent, nullptr), level(0),  color(color) {}
 
-int Street::getBuildingCost()
+/*int Street::getBuildingCost()
 {
     return this->getPrice() / 2;
 }
@@ -60,7 +50,7 @@ void Street::demolishHouse()
     {
         level--;
     }
-}
+}*/
 
 int Street::getLevelOfStreet()
 {
@@ -69,7 +59,7 @@ int Street::getLevelOfStreet()
 
 Street::~Street() {}
 
-int Street::handleCellType(Color color) {
+/*int Street::handleCellType(Color color) {
     switch (color) {
         case Color::RedStreet:
             return 3;
@@ -90,22 +80,26 @@ int Street::handleCellType(Color color) {
         default:
             return 1;
     }
-}
+}*/
 
 Street::Color Street::getColor(){
     return color;
 }
 
-bool Street::isFullListOfStreet(const Player *player, Color color)
+/*bool Street::isFullListOfStreet(const Player *player, Color color)
 {
     int countQuantityProperty = 0;
     for (Property *property : player->getProperties())
     {
         Street *street = dynamic_cast<Street *>(property);
-        if (street->getColor() == color)
+        if (street && street->getColor() == color)
         {
             countQuantityProperty++;
         }
     }
     return countQuantityProperty == handleCellType(color);
+}*/
+
+void Street::setHouseLevel(int level){
+    level = level;
 }
