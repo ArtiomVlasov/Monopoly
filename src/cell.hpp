@@ -19,7 +19,6 @@ class Cell
 {
 protected:
     CellType type;
-
 public:
     Cell(CellType t);
     virtual void onLand(); // сообщает на какую клетку попал
