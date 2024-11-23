@@ -64,7 +64,7 @@ public:
     int getNumberOfHotels() const;
     //int getOwnedPropertyCount(CellType type);
 
-    void payToExit(int jailFee); //FIXME тоже убрать в Prison 
+    // void payToExit(int jailFee); //FIXME тоже убрать в Prison 
     void setBalance(int amount);
     //void setBankrupt();
     std::vector<Property *> getListOfProperty();
