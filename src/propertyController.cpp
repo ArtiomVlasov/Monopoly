@@ -1,61 +1,86 @@
-#include "propertyController.hpp"
+#include "propertySubClassesController.hpp"
 #include "playerController.hpp"
-#include "TaxPrisonChance.hpp"
-#include "prisonController.hpp"
 
-PropertyController::PropertyController(Property *property):property(property){}
-
-void PropertyController::payRent(Player *player, Property *property)
-{
-    int amount = property->getTotalRent(player);
-    std::cout << "Игрок " << player->getName() << " платит ренту в размере " << amount << " монет игроку " << property->getOwner()->getName() << ".\n";
-    playerController::playerPay(amount, player);
-    playerController::playerReceive(amount, player);
+int StreetController::handleStreetType(Street::Color color){
+    switch (color) {
+        case Street::Color::RedStreet:
+            return 3;
+        case Street::Color::YellowStreet:
+            return 3;
+        case Street::Color::GreenStreet:
+            return 3;
+        case Street::Color::BlueStreet:
+            return 2;
+        case Street::Color::BrownStreet:
+           return 2;
+        case Street::Color::WhiteStreet:
+            return 3;
+        case Street::Color::PinkStreet:
+            return 3;
+        case Street::Color::OrangeStreet:
+            return 3;   
+        default:
+            return 1;
+    }
 }
 
-void PropertyController::mortgageProperty(Player *player)
+bool StreetController::isFullListOfStreet(const Player *player, Street::Color color)
 {
-    property->setMortgageStatus(true);
-    playerController::playerReceive(calculateMortgage(property), property->getOwner());
-}
-
-void PropertyController::markAsAvailable(Property *property)
-{
-    property->setMortgageStatus(false);
-    property->setOwner(nullptr);
-}
-
-void PropertyController::unMortgageProperty(Player *player, prisonController * prisonCtrl)
-{
-    if (!prisonCtrl->isInJail(player) && player->getBalance() >= calculateUnMortgage())
+    int countQuantityProperty = 0;
+    for (Property *property : player->getProperties())
     {
-        playerController::playerPay(calculateUnMortgage(), player);
-        property->setMortgageStatus(false);
+        Street *street = dynamic_cast<Street *>(property);
+        if (street && street->getColor() == color)
+        {
+            countQuantityProperty++;
+        }
     }
+    return countQuantityProperty == handleStreetType(color);
 }
 
-bool PropertyController::isOwnedProperty()
+int StreetController::getBuildingCost()
 {
-    if (property->getOwner())
-    {
-        return true;
-    }
-    return false;
+    return street->getPrice() / 2;
 }
 
-int PropertyController::calculateMortgage(Property *property){
-    return property->getRent() / 2;
-}
-
-int PropertyController::calculateUnMortgage()
+void StreetController::buildNewHouse()
 {
-    return (property->getRent() / 2 + property->getRent() * 0.1);
+    if (street->getLevelOfStreet() < 5)
+    { 
+        street->setHouseLevel(street->getLevelOfStreet()+1);
+    }
 }
 
-int PropertyController::getTotalPriceOfProperty(Player* player){
-    int totalPrice = 0;
-    for(Property *property: player->getListOfProperty()){
-        totalPrice+= calculateMortgage(property);
+void StreetController::demolishHouse()
+{
+    if (street->getLevelOfStreet() > 0)
+    { 
+        street->setHouseLevel(street->getLevelOfStreet()-1);
     }
-    return totalPrice;
+}
+
+int StreetController::calculateRent(Player *player, Street *street)
+{
+    int baseRent = street->getRent();
+    return baseRent * (1 + street->getLevelOfStreet()); // Рента увеличивается с уровнем застройки
+}
+
+int RailwayController::calculateRent(Player *player, Railway *railway)
+{
+    int baseRent = railway->getRent();
+    int ownedStations = playerController::getOwnedPropertyCount(CellType::PropRailway, player);
+    return baseRent * ownedStations;
+}
+
+int UtilitiesController::calculateRent(Player *player, Utilities *utilities){
+    int diceRoll = Game::getRollDice();
+    int owned = playerController::getOwnedPropertyCount(CellType::PropUtilities, player);
+    int multiplier = 0;
+    if (owned == 1){
+        multiplier = 4;
+    }
+    else if (owned == 2){
+        multiplier = 10;
+    }
+    return diceRoll * multiplier;
 }
