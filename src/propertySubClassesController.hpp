@@ -8,6 +8,7 @@ class StreetController{
 private:
     Street *street;
 public:
+    StreetController(Street* street);
     int handleStreetType(Street::Color color);
      bool isFullListOfStreet(const Player *player, Street::Color color);
      void buildNewHouse();
