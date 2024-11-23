@@ -11,7 +11,7 @@ void prisonController::playerReleaseFromJail(Player *player){
 }
 bool prisonController::isInJail(Player* player){
     //std::map<Player *,uint8_t> list = prison->getPrisonList();
-    for (const auto& pair : prison->getPrisonList()) {
+    for (const auto& pair : prisonController::getPrison()->getPrisonList()) {
         if (pair.first == player) {
             return pair.second > 0;
         }
@@ -24,15 +24,15 @@ void prisonController::payToExit(Player* player){
     int fee = prison -> getJailFee();
     if(playerController::playerCanAfford(fee, player) == playerController:: CAN_AFFORD){
         playerController::playerPay(fee, player);
-        //FIXME написать что он заплатил и вышел из тюрьмы
+        rednerPlayerAfterPRison(player->getName());
         return;
     }
     else if(playerController::playerCanAfford(fee, player) == playerController::CANNOT_AFFORD){
-        //FIXME написать что он у него не хватает денег
+        rednerPlayerNoPRison(player->getName());
         return;
     }
 }
 
-void prisonController::addPlayerInPrison(Player *player, Prison *prison){
-    prison->getPrisonList().insert({player, 1});
+void prisonController::addPlayerInPrison(Player *player){
+    prisonController::getPrison()->getPrisonList().insert({player, 1});
 }
