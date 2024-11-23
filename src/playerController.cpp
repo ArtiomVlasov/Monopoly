@@ -33,7 +33,7 @@ playerController::AffordStatus playerController::playerCanAfford(int amount, Pla
     {
         return playerController::CAN_AFFORD;
     }
-    if (amount >  Iplayer->getBalance() + PropertyController::getTotalPriceOfProperty(Iplayer))  //FIXED add from prop controller function
+    if (amount >  Iplayer->getBalance() + PropertyController::getTotalPriceOfProperty(Iplayer))  
     {
         return playerController::CANNOT_AFFORD;
     }
@@ -242,7 +242,7 @@ void playerController::playerUnmortgagedProperty(Property* property, PropertyCon
     player->setBalance(PropertyController::calculateMortgage(property));
 }
 
-void playerController::playerMoveToNearestStation(Game *game, int posIndex)
+void playerController::playerMoveToNearestStation(Game *game, int posIndex, Player* Iplayer)
 {
     int nearestStationPosition = -1;
     int minDistance = game->getBoardSize();
@@ -251,7 +251,7 @@ void playerController::playerMoveToNearestStation(Game *game, int posIndex)
     {
         if (cell->getType() == CellType::PropRailway)
         {
-            int distance = std::abs(player->getPosition());
+            int distance = std::abs(Iplayer->getPosition());
             if (distance < minDistance)
             {
                 minDistance = distance;
@@ -262,8 +262,8 @@ void playerController::playerMoveToNearestStation(Game *game, int posIndex)
 
     if (nearestStationPosition != -1)
     {
-        player->setPosition(nearestStationPosition);
-        rednerplayerMoveToNearestStation(0, player->getPosition());
+        Iplayer->setPosition(nearestStationPosition);
+        rednerplayerMoveToNearestStation(0, Iplayer->getPosition());
     }
     else
     {
@@ -287,6 +287,5 @@ int playerController::getOwnedPropertyCount(CellType type, Player *player)
  void playerController::playerBuy(Property *property, Player *Iplayer)
  {
      playerPay(property->getPrice(), Iplayer);
-
      playerAddProperty(property, Iplayer);
  }
