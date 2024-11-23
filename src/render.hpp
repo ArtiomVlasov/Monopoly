@@ -3,6 +3,8 @@
 #include "player.hpp"
 #include "property.hpp"
 #include "propertySubClasses.hpp"
+#include "prisonController.hpp"
+#include "propertyController.hpp"
 
 std::vector<std::pair<std::string, std::string>> listOFstreets = {
     {"GO", "GO"},
@@ -115,7 +117,7 @@ void displayPlayerInfo(Player *player)
     std::cout << "Игрок: " << player->getName() << "\n";
     std::cout << "Баланс: " << player->getBalance() << "\n";
     std::cout << "Позиция на поле: " << player->getPosition() << "\n";
-    std::cout << "В тюрьме: " << (Prison::isInJail(player) ? "Да" : "Нет") << "\n";
+    std::cout << "В тюрьме: " << (prisonController::isInJail(player) ? "Да" : "Нет") << "\n";
     std::cout << "Банкрот: " << (Game::isBankruptPlayer(player) ? "Да" : "Нет") << "\n";
     std::cout << "Недвижимость:\n";
     for (const Property *property : player->getProperties())
@@ -321,13 +323,13 @@ void rednerPlayerStartAuction(int status, Player *player, Property *property, in
 
 void renderpPlayerMortgageProperty(Property *property, Player* player) {
     std::cout << "Игрок " << player->getName() << " заложил имущество \"" << property->getName()
-              << "\" за " << property->calculateMortgage() << " монет.\n";
+              << "\" за " << PropertyController::calculateMortgage(property) << " монет.\n";
 }
 
 
 void renderpPlayerUnmortgageProperty(Property *property, Player* player) {
     std::cout << "Игрок " << player->getName() << " выкупил имущество \"" << property->getName()
-              << "\" за " << property->calculateUnMortgage() << " монет.\n";
+              << "\" за " << PropertyController::calculateUnMortgage() << " монет.\n";
 }
 
 
@@ -338,4 +340,15 @@ void rednerplayerMoveToNearestStation(int status, int position){
     else {
          std::cout << "Станции не найдены на игровом поле.\n";
     }
+}
+
+void rednerPlayerAfterPRison(std::string name){
+    std::cout << name << " заплатил и вышел из тюрьмы";
+}
+void rednerPlayerNoPRison(std::string name){
+    std::cout << name << " не хватает денег";
+}
+
+void renderPayPlater(Player* player, int amount, Property* property){
+    std::cout << "Игрок " << player->getName() << " платит ренту в размере " << amount << " монет игроку " << property->getOwner()->getName() << ".\n";
 }
