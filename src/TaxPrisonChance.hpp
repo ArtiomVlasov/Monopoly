@@ -23,6 +23,7 @@ private:
     static const int jailFee = 100;
     std::map<Player *, uint8_t> playerPrisonList;
 public:
+    std::map<Player *, uint8_t> getPlayerPrisonList();
     uint8_t getNumMovesInPrison(Player* player);
     int getCallDown();
     // void addPlayerInPrison(Player *player);
