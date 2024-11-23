@@ -70,3 +70,16 @@ std::vector<std::shared_ptr<Cell>> Board::getAllCells()
 {
     return cells;
 }
+
+
+Street* Board::getStreetByName(std::string nameStreet) {
+  for (const auto& cell : getAllCells()) { 
+        Street* street = dynamic_cast<Street*>(cell.get());
+        if (cell != nullptr) {
+            if (street->getName() == nameStreet) {
+                return street;
+            }
+        }
+    }
+    return nullptr;
+}
