@@ -11,12 +11,13 @@ private:
 public:
     PropertyController(Property *property);
     static void payRent(Player* player, Property *property);
-     void mortgageProperty(Player* player);
-     void unMortgageProperty(Player* player, prisonController *prisonCtrl);
+    void mortgageProperty(Player* player);
+    void unMortgageProperty(Player* player);
     bool isOwnedProperty();
     static int calculateMortgage(Property *Property);
-     int calculateUnMortgage();
+    static int calculateUnMortgage();
     static void markAsAvailable(Property *property);
     //bool isMortgaged(Property *property);
     static int getTotalPriceOfProperty(Player* player);
+    static Property* getProperty();
 };
