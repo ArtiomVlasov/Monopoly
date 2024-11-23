@@ -17,7 +17,8 @@ public:
         CANNOT_AFFORD
     };
     playerController(Player *player);
-    static void playerMakeMove(int steps, Player *Iplayer); // FIXME хз статик не статик
+    static void playerSellProperty(Player* player, Property* property);
+    static void playerMakeMove(int steps, Player *Iplayer);
     static void playerPay(int amount, Player *Iplayer);
     static void playerReceive(int amount, Player *Iplayer);
     static void playerAddProperty(Property* property, Player *Iplayer);
@@ -32,7 +33,7 @@ public:
     static void playerStartAuction(Property *property, const std::vector<Player *> &players, Player *Iplayer);
     void playerMortgageProperty(Property* property, PropertyController *propCntl);
     void playerUnmortgagedProperty(Property* property, PropertyController *propCntl);
-    void playerMoveToNearestStation(Game* game, int posIndex);
+    static void playerMoveToNearestStation(Game* game, int posIndex, Player* Iplayer);
     static int playerMakeBid(int currentHighestBid, Player *player);
     //void playerReleaseFromJail();
     // void playerSendToJail();
