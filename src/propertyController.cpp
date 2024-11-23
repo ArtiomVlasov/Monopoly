@@ -1,86 +1,61 @@
-#include "propertySubClassesController.hpp"
+#include "propertyController.hpp"
 #include "playerController.hpp"
+#include "TaxPrisonChance.hpp"
+#include "prisonController.hpp"
 
-int StreetController::handleStreetType(Street::Color color){
-    switch (color) {
-        case Street::Color::RedStreet:
-            return 3;
-        case Street::Color::YellowStreet:
-            return 3;
-        case Street::Color::GreenStreet:
-            return 3;
-        case Street::Color::BlueStreet:
-            return 2;
-        case Street::Color::BrownStreet:
-           return 2;
-        case Street::Color::WhiteStreet:
-            return 3;
-        case Street::Color::PinkStreet:
-            return 3;
-        case Street::Color::OrangeStreet:
-            return 3;   
-        default:
-            return 1;
-    }
+PropertyController::PropertyController(Property *property):property(property){}
+
+void PropertyController::payRent(Player *player, Property *property)
+{
+    int amount = property->getTotalRent(player);
+    renderPayPlater(player, amount, property);
+    playerController::playerPay(amount, player);
+    playerController::playerReceive(amount, player);
 }
 
-bool StreetController::isFullListOfStreet(const Player *player, Street::Color color)
+void PropertyController::mortgageProperty(Player *player)
 {
-    int countQuantityProperty = 0;
-    for (Property *property : player->getProperties())
+    property->setMortgageStatus(true);
+    playerController::playerReceive(calculateMortgage(property), property->getOwner());
+}
+
+void PropertyController::markAsAvailable(Property *property)
+{
+    property->setMortgageStatus(false);
+    property->setOwner(nullptr);
+}
+
+void PropertyController::unMortgageProperty(Player *player)
+{
+    if (!prisonController::isInJail(player) && player->getBalance() >= calculateUnMortgage())
     {
-        Street *street = dynamic_cast<Street *>(property);
-        if (street && street->getColor() == color)
-        {
-            countQuantityProperty++;
-        }
-    }
-    return countQuantityProperty == handleStreetType(color);
-}
-
-int StreetController::getBuildingCost()
-{
-    return street->getPrice() / 2;
-}
-
-void StreetController::buildNewHouse()
-{
-    if (street->getLevelOfStreet() < 5)
-    { 
-        street->setHouseLevel(street->getLevelOfStreet()+1);
+        playerController::playerPay(calculateUnMortgage(), player);
+        property->setMortgageStatus(false);
     }
 }
 
-void StreetController::demolishHouse()
+bool PropertyController::isOwnedProperty()
 {
-    if (street->getLevelOfStreet() > 0)
-    { 
-        street->setHouseLevel(street->getLevelOfStreet()-1);
+    if (property->getOwner())
+    {
+        return true;
     }
+    return false;
 }
 
-int StreetController::calculateRent(Player *player, Street *street)
-{
-    int baseRent = street->getRent();
-    return baseRent * (1 + street->getLevelOfStreet()); // Рента увеличивается с уровнем застройки
+int PropertyController::calculateMortgage(Property *property){
+    return property->getRent() / 2;
 }
 
-int RailwayController::calculateRent(Player *player, Railway *railway)
+int PropertyController::calculateUnMortgage()
 {
-    int baseRent = railway->getRent();
-    int ownedStations = playerController::getOwnedPropertyCount(CellType::PropRailway, player);
-    return baseRent * ownedStations;
+    return (PropertyController::getProperty()->getRent() / 2 + PropertyController::getProperty()->getRent() * 0.1);
 }
 
-int UtilitiesController::calculateRent(Player *player, Utilities *utilities){
-    int diceRoll = Game::getRollDice();
-    int owned = playerController::getOwnedPropertyCount(CellType::PropUtilities, player);
-    int multiplier = 0;
-    if (owned == 1){
-        multiplier = 4;
+int PropertyController::getTotalPriceOfProperty(Player* player){
+    int totalPrice = 0;
+    for(Property *property: player->getListOfProperty()){
+        totalPrice+= calculateMortgage(property);
     }
-    else if (owned == 2){
-        multiplier = 10;
-    }
-    return diceRoll * multiplier;
+    return totalPrice;
 }
