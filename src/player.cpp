@@ -381,10 +381,7 @@ int Player::getNumberOfHotels() const
 //     }
 // }
 
-void Player::payToExit(int jailFee)
-{
-    printf("S"); // ????????????????
-}
+
 
 /*int Player::getOwnedPropertyCount(CellType type)
 {
