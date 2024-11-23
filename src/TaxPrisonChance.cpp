@@ -52,7 +52,7 @@ void Prison::onLand()
 void Prison::defaultAction(Player *player, Game *game)
 {
     std::cout << "Игрок " << player->getName() << " отправляется в тюрьму." << std::endl;
-    prisonController::addPlayerInPrison(player, this);
+    prisonController::addPlayerInPrison(player);
 }
 
 int Prison::getJailFee()
@@ -90,13 +90,13 @@ void Chance::initializeEffects()
         {
             std::cout << player->getName() << " перемещается на ближайшую станцию.\n";
             if (player->getPosition() == 7) {
-                player->moveToNearestStation(this->game, 7);
+                playerController::playerMoveToNearestStation(this->game, 7, player);
             }
             else if (player->getPosition() == 23)   {
-                player->moveToNearestStation(this->game, 23);
+                playerController::playerMoveToNearestStation(this->game, 23, player);
             } 
             else if (player->getPosition() == 36) {
-                 playerController::playerMoveToNearestStation(this->game, 36); // FIXME тоже чё то надо думать
+                 playerController::playerMoveToNearestStation(this->game, 36, player); // FIXME тоже чё то надо думать
             }
         },
         // Премия за победу в конкурсе
@@ -117,7 +117,7 @@ void Chance::initializeEffects()
         [](Player *player)
         {
             std::cout << player->getName() << " отправляется в тюрьму.\n";
-            player->sendToJail(); //FIXME таже самая проблема что и в treasure
+            prisonController::addPlayerInPrison(player);
         },
         // Плата за ремонт построек
         [](Player *player)
@@ -173,7 +173,7 @@ void PublicTreasury::initializeActions() {
         
         [](Player* player) {
             std::cout << player->getName() << " отправляется в тюрьму.\n";
-            prisonController::addPlayerInPrison(player, );//FIXME бля походу надо либо класс Prison делать статиком либо надо дуумать 
+            prisonController::addPlayerInPrison(player);//FIXME бля походу надо либо класс Prison делать статиком либо надо дуумать 
         },
         
         [](Player* player) {
@@ -199,7 +199,6 @@ void PublicTreasury::initializeActions() {
 }
 
 void PublicTreasury::defaultAction(Player* player, Game* game) {
-
     int effectIndex = rand() % actions.size();
     std::cout << player->getName() << " попадает на клетку 'Общественная казна'.\n";
     actions[effectIndex](player);
