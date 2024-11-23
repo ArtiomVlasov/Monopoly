@@ -49,56 +49,50 @@ bool Game::isGameOver() const
 
 void Game::caseMapToAction(int a, Player *player, playerController *playercontooller, prisonController *prisoncontroller)
 {
-    switch (a)
+    switch(a)
     {
     case 1:
-        std::cout << "Вы выбрали: Купить " << Board::getPropertyFromCell(player->getPosition());
-        playerController::playerBuy(Board::getPropertyFromCell(player->getPosition()), player);
-        break;
-    case 2:
-        std::cout << "Вы выбрали: Продать. \n";
+        printSellChoice();
         int index = 0;
-        for (; index < player->getListOfProperty().size(); index++)
-        {
-            std::cout << "Выберете что хотите продать? Номе:" << index << " " << player->getListOfProperty()[index]->getName();
-        }
+        printPropertyList(player->getListOfProperty());
+        std::cin >> index; 
         playerController::playerSellProperty(player, player->getListOfProperty()[index]);
         break;
-    case 3:
-        std::cout << "Вы выбрали: Построить дом\n";
+    case 2:
+        printBuildHouseChoice();
         bool status = true;
-        Street* street = nullptr;
+        Street *street = nullptr;
         while (status)
         {
             std::string nameOFStreet;
-    
             std::cin >> nameOFStreet;
             street = board->getStreetByName(nameOFStreet);
             if (street == nullptr)
             {
-                std::cout << "нету такого именни";
+                printStreetNotFound();
                 continue;
             }
-            else {
+            else
+            {
                 status = false;
             }
         }
         StreetController *streetcontroller = new StreetController(street);
-        if (playercontooller->playerCanBuildOn(Board::getPropertyFromCell(player->getPosition()), streetcontroller))
+
+       if (playercontooller->playerCanBuildOn(Board::getPropertyFromCell(player->getPosition()), streetcontroller))
         {
-            std::cout << "вы купили дом";
+            printHousePurchaseSuccess();
             break;
         }
-        std::cout << "Вы не можете купить дом";
+        printHousePurchaseFailure();
         break;
-    case 4:
-        std::cout << "Выйти из тюрьмы\n";
-        prisoncontroller->payToExit(player);
-    case 5:
-        std::cout << " Остаться в тюрьме\n";
+
+    case 3:
+        playerController::playerDeclareBankruptcy(nullptr, player);
         break;
+
     default:
-        std::cout << "Неверный выбор, попробуйте снова\n";
+        printInvalidChoice();
         break;
     }
 }
@@ -146,7 +140,6 @@ void Game::takeTurn(prisonController *pc, playerController *playercontroller, pr
             std::cin >> answer;
             if (answer == 1)
             {
-                // players[playerTurn]->pay(Prison::getJailFee());
                 pc->payToExit(players[playerTurn]);
             }
             return;
@@ -182,17 +175,3 @@ int Game::getRollDice()
 {
     return firstValue + secondValue;
 }
-
-// void Game::sellProperty(Player *player)
-// {
-//     int a;
-//     std::cin >> a;
-//     caseMapToAction(a);
-//     // if (player->getBalance() < MuchIt) {
-//     //     while(player->getBalance() < MuchIt) {
-//     //         int a;
-//     //         std::cin("%d", &a);
-//     //         caseMapToAction(a);
-//     //     }
-//     // }
-// }
