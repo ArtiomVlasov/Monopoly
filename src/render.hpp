@@ -160,12 +160,12 @@ void displayMenu()
     std::cout << "Возможные действия в игре 'Монополия':\n";
     std::cout << "1. Продать собственность\n";
     std::cout << "2. Построить дом/отель\n";
-    std::cout << "3. Выйти из тюрьмы\n";
-    std::cout << "4. Остаться в тюрьме\n";
-    std::cout << "5. Объявить банкротствоn\n";
-    std::cout << "6. Сделать предложение другим игрокам\n";
-    std::cout << "7. Применить карточку 'Выход из тюрьмы бесплатно'\n";
-    std::cout << "8. Сделать ход назад (если предусмотрено правилами)\n";
+    // std::cout << "3. Выйти из тюрьмы\n";
+    // std::cout << "4. Остаться в тюрьме\n";
+    std::cout << "3. Объявить банкротствоn\n";
+    //std::cout << "4. Сделать предложение другим игрокам\n";
+    //std::cout << "7. Применить карточку 'Выход из тюрьмы бесплатно'\n";
+    //std::cout << "8. Сделать ход назад (если предусмотрено правилами)\n";
     std::cout << "9. Завершить ход\n";
 }
 
@@ -351,4 +351,35 @@ void rednerPlayerNoPRison(std::string name){
 
 void renderPayPlater(Player* player, int amount, Property* property){
     std::cout << "Игрок " << player->getName() << " платит ренту в размере " << amount << " монет игроку " << property->getOwner()->getName() << ".\n";
+}
+
+
+void printSellChoice() {
+    std::cout << "Вы выбрали: Продать. \n";
+}
+
+void printPropertyList(const std::vector<Property*>& properties) {
+    for (int index = 0; index < properties.size(); index++) {
+        std::cout << "Выберете что хотите продать? Номер: " << index << " " << properties[index]->getName() << "\n";
+    }
+}
+
+void printBuildHouseChoice() {
+    std::cout << "Вы выбрали: Построить дом\n";
+}
+
+void printStreetNotFound() {
+    std::cout << "Нет такого имени\n";
+}
+
+void printHousePurchaseSuccess() {
+    std::cout << "Вы купили дом\n";
+}
+
+void printHousePurchaseFailure() {
+    std::cout << "Вы не можете купить дом\n";
+}
+
+void printInvalidChoice() {
+    std::cout << "Неверный выбор, попробуйте снова\n";
 }
