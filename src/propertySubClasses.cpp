@@ -6,27 +6,27 @@
 Railway::Railway(std::string name, int price, int rent)
     : Property(CellType::PropRailway, name, price, rent, nullptr) {}
 
-int Railway::getTotalRent(Player *player)
-{
-    return RailwayController::calculateRent(player, this);
-}
+// int Railway::getTotalRent(Player *player)
+// {
+//     return RailwayController::calculateRent(player, this);
+// }
 
 Railway::~Railway() {}
 
 Utilities::Utilities(std::string name, int price, int rent)
     : Property(CellType::PropUtilities, name, price, rent, nullptr) {}
 
-int Utilities::getTotalRent(Player *player)
-{
-    return UtilitiesController::calculateRent(player, this);
-}
+// int Utilities::getTotalRent(Player *player)
+// {
+//     return UtilitiesController::calculateRent(player, this);
+// }
 
 Utilities::~Utilities() {}
 
-int Street::getTotalRent(Player *player)
-{
-    return StreetController::calculateRent(player, this);
-}
+// int Street::getTotalRent(Player *player)
+// {
+//     return StreetController::calculateRent(player, this);
+// }
 
 Street::Street(std::string name, int price, int rent, Color color)
     : Property(CellType::Street, name, price, rent, nullptr), level(0),  color(color) {}

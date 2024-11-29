@@ -24,10 +24,12 @@ int StreetController::handleStreetType(Street::Color color){
     }
 }
 
+StreetController::StreetController(Street *street):PropertyController(street){}
+
 bool StreetController::isFullListOfStreet(const Player *player, Street::Color color)
 {
     int countQuantityProperty = 0;
-    for (Property *property : player->getProperties())
+    for (Property *property : player->getListOfProperty())
     {
         Street *street = dynamic_cast<Street *>(property);
         if (street && street->getColor() == color)
@@ -59,22 +61,26 @@ void StreetController::demolishHouse()
     }
 }
 
-int StreetController::calculateRent(Player *player, Street *street)
+int StreetController::getTotalRent(ArgsForDefAct *args)
 {
     int baseRent = street->getRent();
     return baseRent * (1 + street->getLevelOfStreet()); // Рента увеличивается с уровнем застройки
 }
 
-int RailwayController::calculateRent(Player *player, Railway *railway)
+RailwayController::RailwayController(Railway *railway):PropertyController(railway){}
+
+int RailwayController::getTotalRent(ArgsForDefAct *args)
 {
     int baseRent = railway->getRent();
-    int ownedStations = playerController::getOwnedPropertyCount(CellType::PropRailway, player);
+    int ownedStations = args->plrCntl->getOwnedPropertyCount(CellType::PropRailway);
     return baseRent * ownedStations;
 }
 
-int UtilitiesController::calculateRent(Player *player, Utilities *utilities){
-    int diceRoll = Game::getRollDice();
-    int owned = playerController::getOwnedPropertyCount(CellType::PropUtilities, player);
+UtilitiesController::UtilitiesController(Utilities *utilities):PropertyController(utilities){}
+
+int UtilitiesController::getTotalRent(ArgsForDefAct *args){
+    int diceRoll = args->game->getRollDice();
+    int owned = args->plrCntl->getOwnedPropertyCount(CellType::PropUtilities);
     int multiplier = 0;
     if (owned == 1){
         multiplier = 4;

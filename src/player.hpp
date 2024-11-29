@@ -1,9 +1,9 @@
-
+#pragma once
 #include <string>
 #include <vector>
 #include <cstdint>
 
-#pragma once
+
 class Street;
 class Property;
 class Game;
@@ -30,11 +30,11 @@ public:
     // };
 
     Player(std::string name);
-    Player();
+
     //void setInJael(bool flag); //????????????????????????
     //void makeMove(int steps);
     void setPosition(int pos);
-    //void addProperty(Property *property);
+    void addProperty(Property *property);
     //void pay(int amount);
     //void receive(int amount);
     //AffordStatus canAfford(int amount);
@@ -46,7 +46,7 @@ public:
     //CellType getCellTypeInListOfProperty(int index);
     std::string getName() const;
     int getPosition() const;
-    const std::vector<Property *> &getProperties() const;
+    const std::vector<Property *> &getListOfProperty() const;
     // bool isBankrupt() const;
     // bool isInJail() const;
     // void sendToJail();
@@ -63,11 +63,10 @@ public:
     int getNumberOfHouses() const;
     int getNumberOfHotels() const;
     //int getOwnedPropertyCount(CellType type);
-
+    
     // void payToExit(int jailFee); //FIXME тоже убрать в Prison 
     void setBalance(int amount);
     //void setBankrupt();
-    std::vector<Property *> getListOfProperty();
+    //std::vector<Property *> getListOfProperty();
     void pushListOfProperty(Property* property);
-    ~Player();
 };

@@ -1,9 +1,9 @@
-#include "property.hpp"
 #pragma once
+#include "property.hpp"
 class Railway : public Property
 {
 protected:
-    int getTotalRent(Player *player) override;
+    //int getTotalRent(Player *player) override;
 
 public:
     Railway(std::string name, int price, int rent); // : Property(name, price, rent){}
@@ -13,7 +13,7 @@ public:
 class Utilities : public Property
 {
 protected:
-    int getTotalRent(Player *player) override;
+    //int getTotalRent(Player *player) override;
 
 public:
     Utilities(std::string name, int price, int rent); //: Property(name, price, rent){}
@@ -23,7 +23,7 @@ public:
 class Street : public Property
 {
 protected:
-    int getTotalRent(Player *player) override;
+    // int getTotalRent(Player *player) override;
 
 public:
     enum class Color

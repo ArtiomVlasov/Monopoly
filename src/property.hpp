@@ -1,10 +1,11 @@
-#include "cell.hpp"
+#pragma once
+#include "cellContent.hpp"
 #include <string>
 #include "game.hpp"
 #include <iostream>
-#pragma once
 
-class Property : public Cell
+
+class Property : public CellContent
 {
 private:
     std::string name;
@@ -16,9 +17,9 @@ private:
 //protected:
   //  virtual int getTotalRent(Player *player) = 0;
 public:
-    virtual int getTotalRent(Player *player) = 0;
+    //virtual int getTotalRent(Player *player) = 0;
     Property(CellType type,std::string Name, int Price, int Rent, Player *owner);
-    virtual void defaultAction(Player *player, Game* game) override;
+    //virtual void defaultAction(Player *player, Game* game) override;
     //void payRent(Player *player); // платишь ренту
     int getRent() const;
     //bool isOwned();

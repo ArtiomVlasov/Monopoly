@@ -1,8 +1,9 @@
 #include "property.hpp"
-#include "cell.hpp"
+#include "cellContent.hpp"
 #include "game.hpp"
 #include "TaxPrisonChance.hpp"
 #include "propertySubClasses.hpp"
+
 
 Board::Board(int numCells, Game *game):game(game)
 {
@@ -13,7 +14,7 @@ Board::Board(int numCells, Game *game):game(game)
     cells.push_back(std::make_shared<Railway>("King's Cross Station", 200, 25));
 
     cells.push_back(std::make_shared<Street>("The Angel Islington", 100, 6, Street::Color::WhiteStreet));
-    cells.push_back(std::make_shared<Chance>(game));
+    cells.push_back(std::make_shared<Chance>());
     cells.push_back(std::make_shared<Street>("Euston Road", 100, 6,  Street::Color::WhiteStreet));
     cells.push_back(std::make_shared<Street>("Pentonville Road", 120, 8,  Street::Color::WhiteStreet));
     cells.push_back(std::make_shared<EmptyCell>());
@@ -31,7 +32,7 @@ Board::Board(int numCells, Game *game):game(game)
     cells.push_back(std::make_shared<EmptyCell>());
 
     cells.push_back(std::make_shared<Street>("Strand", 220, 18, Street::Color::RedStreet));
-    cells.push_back(std::make_shared<Chance>(game));
+    cells.push_back(std::make_shared<Chance>());
     cells.push_back(std::make_shared<Street>("Fleet Street", 220, 18, Street::Color::RedStreet));
     cells.push_back(std::make_shared<Street>("Trafalgar Square", 240, 20, Street::Color::RedStreet));
     cells.push_back(std::make_shared<Railway>( "Fenchurch St Station", 200, 25));
@@ -48,7 +49,7 @@ Board::Board(int numCells, Game *game):game(game)
     cells.push_back(std::make_shared<Street>("Bond Street", 320, 28, Street::Color::GreenStreet));
     cells.push_back(std::make_shared<Railway>( "Liverpool Street Station", 200, 25));
 
-    cells.push_back(std::make_shared<Chance>(game));
+    cells.push_back(std::make_shared<Chance>());
     cells.push_back(std::make_shared<Street>("Park Lane", 350, 35, Street::Color::BlueStreet));
     cells.push_back(std::make_shared<Tax>(100));
     cells.push_back(std::make_shared<Street>("Mayfair", 400, 50, Street::Color::BlueStreet));
@@ -56,7 +57,7 @@ Board::Board(int numCells, Game *game):game(game)
 
 }
 
-std::shared_ptr<Cell> Board::getCell(int position) const
+std::shared_ptr<CellContent> Board::getCell(int position) const
 {
     return cells[position];
 }
@@ -66,7 +67,7 @@ int Board::getNextPosition(int currentPosition, int roll) const
     return (currentPosition + roll) % cells.size();
 }
 
-std::vector<std::shared_ptr<Cell>> Board::getAllCells()
+std::vector<std::shared_ptr<CellContent>> Board::getAllCells()
 {
     return cells;
 }

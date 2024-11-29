@@ -1,20 +1,21 @@
+#pragma once
 #include <vector>
 #include <memory>
-#pragma once
 
-class Cell;
+
+class CellContent;
 class Game;
+class Property;
+class Street;
 
 class Board {
 private:
-    std::vector<std::shared_ptr<Cell>> cells;
+    std::vector<std::shared_ptr<CellContent>> cells;
     Game *game;
 public:
-    static Property* getPropertyFromCell(int a);
-    Board();
     Board(int numCells, Game *game);
-    std::shared_ptr<Cell> getCell(int position) const;
+    std::shared_ptr<CellContent> getCell(int position) const;
     Street* getStreetByName(std::string m);
     int getNextPosition(int currentPosition, int roll) const;
-    std::vector<std::shared_ptr<Cell>> getAllCells();
+    std::vector<std::shared_ptr<CellContent>> getAllCells();
 };

@@ -1,6 +1,6 @@
 #include "player.hpp"
 #include "propertySubClasses.hpp"
-#include "cell.hpp"
+#include "cellContent.hpp"
 
 Player::Player(std::string name) : name(name), balance(2000), position(0), listOfProperty() {}
 
@@ -26,12 +26,11 @@ Player::Player(std::string name) : name(name), balance(2000), position(0), listO
 //     balance += amount;
 // }
 
-// void Player::addProperty(Property *property)
-// {
-//     totalPriceOfProperty += property->calculateMortgage();
-//     property->setOwner(this);
-//     listOfProperty.push_back(property);
-// }
+void Player::addProperty(Property *property)
+{
+    property->setOwner(this);
+    listOfProperty.push_back(property);
+}
 
 // Player::AffordStatus Player::canAfford(int amount)
 // {
@@ -91,7 +90,7 @@ int Player::getPosition() const
     return position;
 }
 
-const std::vector<Property *> &Player::getProperties() const
+const std::vector<Property *> &Player::getListOfProperty() const
 {
     return listOfProperty;
 }
@@ -108,7 +107,7 @@ const std::vector<Property *> &Player::getProperties() const
 
 void Player::setPosition(int pos)
 {
-    position = pos;
+    position = pos % 40;
 }
 
 // void Player::sendToJail()
@@ -190,6 +189,16 @@ int Player::getNumberOfHotels() const
         }
     }
     return hotelCount;
+}
+
+void Player::setBalance(int amount)
+{
+    balance = amount;
+}
+
+void Player::pushListOfProperty(Property *property)
+{
+    listOfProperty.push_back(property);
 }
 
 // void Player::buildStructure(Street *street)
@@ -405,3 +414,4 @@ int Player::getNumberOfHotels() const
 // {
 //     totalDiceRoll = game->getRollDice();
 // }
+

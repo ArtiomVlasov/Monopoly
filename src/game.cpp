@@ -6,9 +6,10 @@
 #include "render.hpp"
 #include "TaxPrisonChance.hpp"
 #include "playerController.hpp"
-#include "prisonController.hpp"
+#include "TaxPrisonChanceCntl.hpp"
 #include "propertySubClassesController.hpp"
 #include <cstdlib> // для system()
+#include <algorithm>
 
 void clearConsole()
 {
@@ -42,23 +43,46 @@ int Game::rollDice()
     return firstValue + secondValue;
 }
 
+bool Game::isBankruptPlayer(Player *player)
+{
+    auto a = std::find(bankruptPlayers.begin(), bankruptPlayers.end(), player);
+    return a != bankruptPlayers.end();
+}
+
+void Game::addBankruptPlayers(Player *player)
+{
+    bankruptPlayers.push_back(player);
+}
+
 bool Game::isGameOver() const
 { // опистаь
     return isAllPlayersIsBankrupt;
 }
 
-void Game::caseMapToAction(int a, Player *player, playerController *playercontooller, prisonController *prisoncontroller)
+void Game::sellProperty(Player *player, playerController *plrCntl)
 {
-    switch(a)
+    printSellChoice();
+    int index = 1;
+    while (index != 0)
+    {
+        printPropertyList(player->getListOfProperty());
+        std::cin >> index;
+        Property *property = player->getListOfProperty()[index];
+        plrCntl->playerMortgageProperty(property);
+    }
+}
+
+void Game::caseMapToAction(int a, Player *player, playerController *plrCntl, prisonController *prisonCntl)
+{
+    switch (a)
     {
     case 1:
-        printSellChoice();
-        int index = 0;
-        printPropertyList(player->getListOfProperty());
-        std::cin >> index; 
-        playerController::playerSellProperty(player, player->getListOfProperty()[index]);
+    {
+        sellProperty(player, plrCntl);
         break;
+    }
     case 2:
+    {
         printBuildHouseChoice();
         bool status = true;
         Street *street = nullptr;
@@ -77,23 +101,24 @@ void Game::caseMapToAction(int a, Player *player, playerController *playercontoo
                 status = false;
             }
         }
-        StreetController *streetcontroller = new StreetController(street);
-
-       if (playercontooller->playerCanBuildOn(Board::getPropertyFromCell(player->getPosition()), streetcontroller))
-        {
-            printHousePurchaseSuccess();
-            break;
-        }
-        printHousePurchaseFailure();
+        StreetController *strCntl = new StreetController(street);
+        plrCntl->playerBuildStructure(street, strCntl);
         break;
-
+    }
     case 3:
-        playerController::playerDeclareBankruptcy(nullptr, player);
+    {
+        plrCntl->playerDeclareBankruptcy(nullptr, this);
         break;
-
+    }
+    case 4:
+    {
+        renderEndTurn(player);
+        nextPlayer();
+        break;
     default:
         printInvalidChoice();
         break;
+    }
     }
 }
 
@@ -103,17 +128,17 @@ void Game::start()
     //     playerController pController = new playerController(players[])
     // }
     WelcomeThePlayers(players);
-    prisonController *prisContoller = new prisonController(new Prison());
+    prisonController *prisController = new prisonController(new Prison());
     while (!isGameOver())
     {
         drawBoard();
         for (int i = 0; i < numPlayers; i++)
         {
-            displayPlayerInfo(players[i]);
+            displayPlayerInfo(players[i], this, prisController);
         }
         playerController *playercontroller = new playerController(players[playerTurn]);
-        prisonController *prisoncontoller = new prisonController(new Prison());
-        takeTurn(prisContoller, playercontroller, prisContoller);
+
+        takeTurn(prisController, playercontroller);
         clearConsole();
     }
 }
@@ -124,10 +149,10 @@ void Game::nextPlayer()
     playerTurn %= numPlayers;
 }
 
-void Game::takeTurn(prisonController *pc, playerController *playercontroller, prisonController *prisoncontroller)
+void Game::takeTurn(prisonController *pc, playerController *plrCntl)
 {
     rollDice();
-    if (prisonController::isInJail(players[playerTurn]))
+    /*if (pc->isInJail(players[playerTurn]))
     {
         if (firstValue == secondValue)
         {
@@ -140,20 +165,71 @@ void Game::takeTurn(prisonController *pc, playerController *playercontroller, pr
             std::cin >> answer;
             if (answer == 1)
             {
-                pc->payToExit(players[playerTurn]);
+                pc->payToExit(players[playerTurn], plrCntl);
             }
             return;
         }
+    }*/
+
+    players[playerTurn]->setPosition(players[playerTurn]->getPosition() + firstValue + secondValue);
+
+    // plrCntl->playerMakeMove(firstValue + secondValue, players[playerTurn]); // зачем нам поле PLayer?????????
+    CellContent *cell = board->getCell(players[playerTurn]->getPosition()).get();
+    CellController *cellController;
+    std::cout<<"___====_____________+++++\n";
+    switch (cell->getType())
+    {
+    case CellType::Street:
+    {
+        StreetController *street = new StreetController(dynamic_cast<Street *>(cell));
+        cellController = street;
     }
-    playerController::playerMakeMove(firstValue + secondValue, players[playerTurn]); // зачем нам поле PLayer?????????
-    Cell *cell = board->getCell(players[playerTurn]->getPosition()).get();
-    cell->defaultAction(players[playerTurn], this);
+    case CellType::EmptyCell:
+    {
+        EmptyCellController *empty = new EmptyCellController();
+        cellController = empty;
+    }
+    case CellType::Chance:
+    {
+        ChanceController *chance = new ChanceController(dynamic_cast<Chance *>(cell));
+        cellController = chance;
+    }
+    case CellType::Prison:
+    {
+        prisonController *prison = new prisonController(dynamic_cast<Prison *>(cell));
+        cellController = prison;
+    }
+    case CellType::PropRailway:
+    {
+        RailwayController *prop = new RailwayController(dynamic_cast<Railway *>(cell));
+        cellController = prop;
+    }
+    case CellType::PropUtilities:
+    {
+        UtilitiesController *util = new UtilitiesController(dynamic_cast<Utilities *>(cell));
+        cellController = util;
+    }
+    case CellType::publicTreasury:
+    {
+        PublicTreasuryController *tres = new PublicTreasuryController(dynamic_cast<PublicTreasury *>(cell));
+        cellController = tres;
+    }
+    case CellType::Tax:
+    {
+        TaxController *tax = new TaxController(dynamic_cast<Tax *>(cell));
+        cellController = tax;
+    }
+    }
+    ArgsForDefAct *args = cellController->getArgs(players[playerTurn], this, plrCntl);
+    std::cout<<"cweweco8899999999999999999\n";
+    cellController->defaultAction(args);
+    std::cout<<"";
     displayMenu();
 
-    int a;
-    std::cin >> a;
-    caseMapToAction(a, players[playerTurn], playercontroller, prisoncontroller);
-    nextPlayer();
+    int decision;
+    std::cin >> decision;
+    caseMapToAction(decision, players[playerTurn], plrCntl, pc);
+    // nextPlayer();
 }
 
 int Game::getBoardSize()
@@ -174,4 +250,9 @@ std::vector<Player *> Game::getListOfPlayers()
 int Game::getRollDice()
 {
     return firstValue + secondValue;
+}
+
+std::vector<Player *> Game::getBankruptPlayers()
+{
+    return bankruptPlayers;
 }

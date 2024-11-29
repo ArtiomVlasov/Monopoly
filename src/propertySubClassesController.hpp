@@ -1,28 +1,45 @@
 #pragma once
-#include "property.hpp"
-#include "player.hpp"
 #include "propertySubClasses.hpp"
 #include <iostream>
+#include "propertyController.hpp"
 
-class StreetController{
+class Player;
+class Property;
+
+class StreetController : public PropertyController
+{
 private:
     Street *street;
+
 public:
-    StreetController(Street* street);
+    StreetController(Street *street);
     int handleStreetType(Street::Color color);
-     bool isFullListOfStreet(const Player *player, Street::Color color);
-     void buildNewHouse();
-     void demolishHouse();
+    bool isFullListOfStreet(const Player *player, Street::Color color);
+    void buildNewHouse();
+    void demolishHouse();
     int getBuildingCost();
-    static int calculateRent(Player *player, Street *street);
+    // static int calculateRent(Player *player, Street *street);
+    int getTotalRent(ArgsForDefAct *args) override;
 };
 
-class RailwayController{
+class RailwayController : public PropertyController
+{
+private:
+    Railway *railway;
+
 public:
-    static int calculateRent(Player *player, Railway *street);
+    RailwayController(Railway *railway);
+    // static int calculateRent(Player *player, Railway *street);
+    int getTotalRent(ArgsForDefAct *args) override;
 };
 
-class UtilitiesController{
+class UtilitiesController : public PropertyController
+{
+private:
+    Utilities *utilities;
+
 public:
-    static int calculateRent(Player *player, Utilities *street);
+    UtilitiesController(Utilities *utilities);
+    // static int calculateRent(Player *player, Utilities *street);
+    int getTotalRent(ArgsForDefAct *args) override;
 };
