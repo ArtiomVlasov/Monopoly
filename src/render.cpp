@@ -118,12 +118,20 @@ void displayPlayerInfo(Player *player, Game *game, prisonController *prisonCntl)
     std::cout << "Игрок: " << player->getName() << "\n";
     std::cout << "Баланс: " << player->getBalance() << "\n";
     std::cout << "Позиция на поле: " << player->getPosition() << "\n";
-    //std::cout << "В тюрьме: " << (prisonCntl -> isInJail(player) ? "Да" : "Нет") << "\n";
+    std::cout << "В тюрьме: " << (prisonCntl->isInJail(player) ? "Да" : "Нет") << "\n";
     std::cout << "Банкрот: " << (game->isBankruptPlayer(player) ? "Да" : "Нет") << "\n";
     std::cout << "Недвижимость:\n";
-    for (const Property *property : player->getListOfProperty())
+    for (Property *property : player->getListOfProperty())
     {
-        std::cout << " - " << property->getName() << "\n";
+        std::cout << " - " << property->getName();
+        if (property->isMortgaged())
+        {
+            std::cout << " (Заложено)\n";
+        }
+        else
+        {
+            std::cout << " \n";
+        }
     }
     std::cout << "-------------------------------------\n";
 }
@@ -164,9 +172,9 @@ void displayMenu()
     // std::cout << "3. Выйти из тюрьмы\n";
     // std::cout << "4. Остаться в тюрьме\n";
     std::cout << "3. Объявить банкротствоn\n";
-    //std::cout << "4. Сделать предложение другим игрокам\n";
-    //std::cout << "7. Применить карточку 'Выход из тюрьмы бесплатно'\n";
-    //std::cout << "8. Сделать ход назад (если предусмотрено правилами)\n";
+    // std::cout << "4. Сделать предложение другим игрокам\n";
+    // std::cout << "7. Применить карточку 'Выход из тюрьмы бесплатно'\n";
+    // std::cout << "8. Сделать ход назад (если предусмотрено правилами)\n";
     std::cout << "4. Завершить ход\n";
 }
 
@@ -278,7 +286,7 @@ void renderPlayerMakeBid(int currentHighestBid, Player *player, int status, int 
         std::cout << "У " << player->getName() << ", не хватает денег, он выходит из аукциона.\n";
         break;
     case 5:
-        std::cout << player->getName() << ", Ставка должна быть выше текущей наивысшей ставки.\n";
+        std::cout << player->getName() << ", Ставка должна быть выше текущей наивысшей ставки и минимум 10М.\n";
         break;
     default:
         std::cout << "Неизвестный статус.\n";
@@ -322,71 +330,124 @@ void rednerPlayerStartAuction(int status, Player *player, Property *property, in
     }
 }
 
-void renderpPlayerMortgageProperty(Property *property, Player* player, PropertyController *propCntl) {
+void renderpPlayerMortgageProperty(Property *property, Player *player, PropertyController *propCntl)
+{
     std::cout << "Игрок " << player->getName() << " заложил имущество \"" << property->getName()
               << "\" за " << propCntl->calculateMortgage() << " монет.\n";
 }
 
+void renderpPlayerUnmortgageProperty(Property *property, Player *player, PropertyController *propCntl)
+{
 
-void renderpPlayerUnmortgageProperty(Property *property, Player* player, PropertyController *propCntl) {
-    
     std::cout << "Игрок " << player->getName() << " выкупил имущество \"" << property->getName()
               << "\" за " << propCntl->calculateUnMortgage() << " монет.\n";
 }
 
-
-void rednerplayerMoveToNearestStation(int status, int position){
-    if (status == 0) {
-         std::cout << "Игрок перемещен на ближайшую станцию на позиции " << position << ".\n";
+void rednerplayerMoveToNearestStation(int status, int position)
+{
+    if (status == 0)
+    {
+        std::cout << "Игрок перемещен на ближайшую станцию на позиции " << position << ".\n";
     }
-    else {
-         std::cout << "Станции не найдены на игровом поле.\n";
+    else
+    {
+        std::cout << "Станции не найдены на игровом поле.\n";
     }
 }
 
-void rednerPlayerAfterPRison(std::string name){
+void rednerPlayerAfterPRison(std::string name)
+{
     std::cout << name << " заплатил и вышел из тюрьмы";
 }
-void rednerPlayerNoPRison(std::string name){
+void rednerPlayerNoPRison(std::string name)
+{
     std::cout << name << " не хватает денег";
 }
 
-void renderPayPlater(Player* player, int amount, Property* property){
+void renderPayPlater(Player *player, int amount, Property *property)
+{
     std::cout << "Игрок " << player->getName() << " платит ренту в размере " << amount << " монет игроку " << property->getOwner()->getName() << ".\n";
 }
 
-
-void printSellChoice() {
+void printSellChoice()
+{
     std::cout << "Вы выбрали: Продать. \n";
 }
 
-void printPropertyList(const std::vector<Property*>& properties) {
-    for (int index = 0; index < properties.size(); index++) {
-        std::cout << "Выберете что хотите продать? Номер: " << index+1 << " " << properties[index]->getName() << "\n";
-    }
-    std::cout<<"Если не хотите ничего продавать, нажмите 0.";
+void printCantMortgage(Property *property)
+{
+    std::cout << "Вы не можете заложить это имущество, оно уже заложено! \n";
 }
 
-void printBuildHouseChoice() {
+void printPropertyList(const std::vector<Property *> &properties)
+{
+    std::cout << "Выберете что хотите продать? Номер: ";
+    for (int index = 0; index < properties.size(); index++)
+    {
+        std::cout << index + 1 << " " << properties[index]->getName();
+        if (properties[index]->isMortgaged())
+        {
+            std::cout << "(Заложено) \n";
+        }
+        else
+        {
+            std::cout << "\n";
+        }
+    }
+    std::cout << "Если не хотите ничего продавать, нажмите 0.\n";
+}
+
+void printStreets(const std::vector<Property *> &properties)
+{
+    std::cout << "Выберете на какой улице хотите построить дом? \nЕсли не хотите ничего строить, нажмите 0\n";
+    for (int index = 0; index < properties.size(); index++)
+    {
+        if (properties[index]->getType() == CellType::Street)
+        {
+            std::cout << "Номер: " << index + 1 << " " << properties[index]->getName();
+            if (properties[index]->isMortgaged())
+            {
+                std::cout << "(Заложено) \n";
+            }
+            else
+            {
+                std::cout << "\n";
+            }
+        }
+    }
+}
+
+void printBuildHouseChoice()
+{
     std::cout << "Вы выбрали: Построить дом\n";
 }
 
-void printStreetNotFound() {
+void printNoStreetsInChose(Player *player)
+{
+    std::cout << "У вас нет улиц во владении!\n";
+}
+
+void printStreetNotFound()
+{
     std::cout << "Нет такого имени\n";
 }
 
-void printHousePurchaseSuccess() {
+void printHousePurchaseSuccess()
+{
     std::cout << "Вы купили дом\n";
 }
 
-void printHousePurchaseFailure() {
+void printHousePurchaseFailure()
+{
     std::cout << "Вы не можете купить дом\n";
 }
 
-void printInvalidChoice() {
+void printInvalidChoice()
+{
     std::cout << "Неверный выбор, попробуйте снова\n";
 }
 
-void renderEndTurn(Player *player){
-    std::cout << "Игрок "<< player->getName()<< "завершил ход";
+void renderEndTurn(Player *player)
+{
+    std::cout << "Игрок " << player->getName() << "завершил ход \n";
 }

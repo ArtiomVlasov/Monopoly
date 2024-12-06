@@ -2,7 +2,9 @@
 #include "playerController.hpp"
 #include "render.hpp"
 
-prisonController::prisonController(Prison *prison) : CellController(prison) {}
+prisonController::prisonController(Prison *prison) : CellController(prison) {
+    this->prison = prison;
+}
 
 void prisonController::playerReleaseFromJail(Player *player)
 {
@@ -13,16 +15,14 @@ void prisonController::playerReleaseFromJail(Player *player)
 }
 bool prisonController::isInJail(Player *player)
 {
-    std::cout<<"______________________\n";
+
     if(prison == nullptr){
         return false;
     }
     std::map<Player *, uint8_t> *playerPrison = prison->getPlayerPrisonList();
-    std::cout<<"+++++++++++++++++++\n";
-    if(playerPrison->empty()){
+    if(playerPrison == nullptr){
         return false;
     }
-    std::cout<<"******************\n";
     auto it = playerPrison->find(player);
     if (it != playerPrison->end())
     {
@@ -65,7 +65,9 @@ void prisonController::defaultAction(ArgsForDefAct *args)
     addPlayerInPrison(args->player);
 }
 
-TaxController::TaxController(Tax *tax) : CellController(tax) {}
+TaxController::TaxController(Tax *tax) : CellController(tax) {
+    this->tax = tax;
+}
 
 void TaxController::defaultAction(ArgsForDefAct *args)
 {
@@ -93,7 +95,9 @@ void TaxController::defaultAction(ArgsForDefAct *args)
     }
 }
 
-ChanceController::ChanceController(Chance *chance) : CellController(chance) {}
+ChanceController::ChanceController(Chance *chance) : CellController(chance) {
+    this->chance = chance;
+}
 
 void ChanceController::defaultAction(ArgsForDefAct *args)
 {
@@ -112,6 +116,8 @@ void PublicTreasuryController::defaultAction(ArgsForDefAct *args)
 }
 PublicTreasuryController::PublicTreasuryController(PublicTreasury *treasure) : CellController(treasure) {}
 
-EmptyCellController::EmptyCellController() : CellController(nullptr) {}
+EmptyCellController::EmptyCellController(EmptyCell *emptyCell) : CellController(emptyCell) {
+    this->emptyCell = emptyCell;
+}
 
 void EmptyCellController::defaultAction(ArgsForDefAct *args) {}

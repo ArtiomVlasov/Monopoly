@@ -43,3 +43,6 @@ void printStreetNotFound();
 void printHousePurchaseSuccess();
 void printHousePurchaseFailure();
 void printInvalidChoice();
+void printCantMortgage(Property *property);
+void printNoStreetsInChose(Player *player);
+void printStreets(const std::vector<Property *> &properties);

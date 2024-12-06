@@ -21,7 +21,9 @@ Tax::~Tax() {}
 
 std::map<Player *, uint8_t> *Prison::getPlayerPrisonList()
 {
-    std::cout<<"++++===========+++++++++\nd3d333333333\n";
+    if (playerPrisonList->empty()){
+        return nullptr;
+    }
     return playerPrisonList;
 }
 
@@ -37,7 +39,7 @@ int Prison::getCallDown()
     return callDown;
 }
 
-Prison::Prison() : CellContent(CellType::Prison), callDown(3), playerPrisonList(nullptr) {}
+Prison::Prison() : CellContent(CellType::Prison), callDown(3), playerPrisonList(new std::map<Player *, uint8_t>()) {}
 
 void Prison::onLand()
 {

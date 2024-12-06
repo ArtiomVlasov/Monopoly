@@ -72,6 +72,9 @@
     "variant": "cpp",
     "charconv": "cpp",
     "complex": "cpp",
-    "format": "cpp"
+    "format": "cpp",
+    "codecvt": "cpp",
+    "ranges": "cpp",
+    "valarray": "cpp"
   }
 }

@@ -47,8 +47,10 @@ public:
 };  
 
 class EmptyCellController : public CellController{
+private:
+    EmptyCell* emptyCell;
 public:
-    EmptyCellController();
+    EmptyCellController(EmptyCell* emptyCell);
 
     void defaultAction(ArgsForDefAct *args) override; 
 };

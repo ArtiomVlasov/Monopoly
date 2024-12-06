@@ -32,3 +32,5 @@
 *.app
 build
 build.sh
+main
+src/des

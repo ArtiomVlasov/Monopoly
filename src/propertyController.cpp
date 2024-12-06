@@ -4,7 +4,9 @@
 #include "TaxPrisonChanceCntl.hpp"
 #include "render.hpp"
 
-PropertyController::PropertyController(Property *property) :CellController(property) {}
+PropertyController::PropertyController(Property *property) :CellController(property) {
+    this -> property = property;
+}
 
 void PropertyController::defaultAction(ArgsForDefAct *args)
 {

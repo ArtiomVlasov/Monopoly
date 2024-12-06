@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
-#include "player.hpp" // без него ругается
+#include "player.hpp"
 #include "render.hpp"
 #include "TaxPrisonChance.hpp"
 #include "playerController.hpp"
@@ -10,6 +10,7 @@
 #include "propertySubClassesController.hpp"
 #include <cstdlib> // для system()
 #include <algorithm>
+#include "../json.hpp"
 
 void clearConsole()
 {
@@ -38,8 +39,8 @@ Game::Game(int numPlayers, int numCells)
 
 int Game::rollDice()
 {
-    firstValue = std::rand() % 7;
-    secondValue = std::rand() % 7;
+    firstValue = std::rand() % 6 + 1;
+    secondValue = std::rand() % 6 + 1;
     return firstValue + secondValue;
 }
 
@@ -52,6 +53,10 @@ bool Game::isBankruptPlayer(Player *player)
 void Game::addBankruptPlayers(Player *player)
 {
     bankruptPlayers.push_back(player);
+    std::vector<Player *> pl = getBankruptPlayers();
+    if (pl.size() == numPlayers){
+        isAllPlayersIsBankrupt = true;
+    }
 }
 
 bool Game::isGameOver() const
@@ -62,19 +67,28 @@ bool Game::isGameOver() const
 void Game::sellProperty(Player *player, playerController *plrCntl)
 {
     printSellChoice();
-    int index = 1;
+    int index;
+    printPropertyList(player->getListOfProperty());
+    std::cin >> index;
     while (index != 0)
     {
+        Property *property = player->getListOfProperty()[index - 1];
+        if (!property->isMortgaged())
+        {
+            plrCntl->playerMortgageProperty(property);
+        }
+        else
+        {
+            printCantMortgage(property);
+        }
         printPropertyList(player->getListOfProperty());
         std::cin >> index;
-        Property *property = player->getListOfProperty()[index];
-        plrCntl->playerMortgageProperty(property);
     }
 }
 
-void Game::caseMapToAction(int a, Player *player, playerController *plrCntl, prisonController *prisonCntl)
+void Game::caseMapToAction(int decision, Player *player, playerController *plrCntl, prisonController *prisonCntl)
 {
-    switch (a)
+    switch (decision)
     {
     case 1:
     {
@@ -84,25 +98,47 @@ void Game::caseMapToAction(int a, Player *player, playerController *plrCntl, pri
     case 2:
     {
         printBuildHouseChoice();
-        bool status = true;
-        Street *street = nullptr;
-        while (status)
+        if (plrCntl->getOwnedPropertyCount(CellType::Street) != 0)
         {
-            std::string nameOFStreet;
-            std::cin >> nameOFStreet;
-            street = board->getStreetByName(nameOFStreet);
-            if (street == nullptr)
+
+            printStreets(player->getListOfProperty());
+            bool status = true;
+            Street *street = nullptr;
+            int decision;
+            std::cin >> decision;
+            while (decision != 0)
             {
-                printStreetNotFound();
-                continue;
+                int counterOfStreet = 0;
+                for (Property *property : player->getListOfProperty())
+                {
+                    if (property->getType() == CellType::Street)
+                    {
+                        counterOfStreet++;
+                        if (counterOfStreet == decision)
+                        {
+                            street = dynamic_cast<Street *>(property);
+                            decision = 0;
+                            break;
+                        }
+                    }
+                }
+                if (street == nullptr)
+                {
+                    printStreetNotFound();
+                    std::cin >> decision;
+                    continue;
+                }
             }
-            else
+            if (street != nullptr)
             {
-                status = false;
+                StreetController *strCntl = new StreetController(street);
+                plrCntl->playerBuildStructure(street, strCntl);
             }
         }
-        StreetController *strCntl = new StreetController(street);
-        plrCntl->playerBuildStructure(street, strCntl);
+        else
+        {
+            printNoStreetsInChose(player);
+        }
         break;
     }
     case 3:
@@ -110,12 +146,9 @@ void Game::caseMapToAction(int a, Player *player, playerController *plrCntl, pri
         plrCntl->playerDeclareBankruptcy(nullptr, this);
         break;
     }
-    case 4:
-    {
-        renderEndTurn(player);
-        nextPlayer();
-        break;
+
     default:
+    {
         printInvalidChoice();
         break;
     }
@@ -128,7 +161,8 @@ void Game::start()
     //     playerController pController = new playerController(players[])
     // }
     WelcomeThePlayers(players);
-    prisonController *prisController = new prisonController(new Prison());
+    Prison *prison = new Prison();
+    prisonController *prisController = new prisonController(prison);
     while (!isGameOver())
     {
         drawBoard();
@@ -152,7 +186,8 @@ void Game::nextPlayer()
 void Game::takeTurn(prisonController *pc, playerController *plrCntl)
 {
     rollDice();
-    /*if (pc->isInJail(players[playerTurn]))
+    std::cout << this->getRollDice() << "\n";
+    if (pc->isInJail(players[playerTurn]))
     {
         if (firstValue == secondValue)
         {
@@ -169,67 +204,82 @@ void Game::takeTurn(prisonController *pc, playerController *plrCntl)
             }
             return;
         }
-    }*/
+    }
 
     players[playerTurn]->setPosition(players[playerTurn]->getPosition() + firstValue + secondValue);
 
     // plrCntl->playerMakeMove(firstValue + secondValue, players[playerTurn]); // зачем нам поле PLayer?????????
     CellContent *cell = board->getCell(players[playerTurn]->getPosition()).get();
     CellController *cellController;
-    std::cout<<"___====_____________+++++\n";
     switch (cell->getType())
     {
     case CellType::Street:
     {
-        StreetController *street = new StreetController(dynamic_cast<Street *>(cell));
-        cellController = street;
+        Street *street = dynamic_cast<Street *>(cell);
+        StreetController *streetcntl = new StreetController(street);
+        cellController = streetcntl;
+        break;
     }
     case CellType::EmptyCell:
     {
-        EmptyCellController *empty = new EmptyCellController();
+        EmptyCellController *empty = new EmptyCellController(dynamic_cast<EmptyCell *>(cell));
         cellController = empty;
+        break;
     }
     case CellType::Chance:
     {
         ChanceController *chance = new ChanceController(dynamic_cast<Chance *>(cell));
         cellController = chance;
+        break;
     }
     case CellType::Prison:
     {
         prisonController *prison = new prisonController(dynamic_cast<Prison *>(cell));
         cellController = prison;
+        break;
     }
     case CellType::PropRailway:
     {
         RailwayController *prop = new RailwayController(dynamic_cast<Railway *>(cell));
         cellController = prop;
+        break;
     }
     case CellType::PropUtilities:
     {
         UtilitiesController *util = new UtilitiesController(dynamic_cast<Utilities *>(cell));
         cellController = util;
+        break;
     }
     case CellType::publicTreasury:
     {
         PublicTreasuryController *tres = new PublicTreasuryController(dynamic_cast<PublicTreasury *>(cell));
         cellController = tres;
+        break;
     }
     case CellType::Tax:
     {
         TaxController *tax = new TaxController(dynamic_cast<Tax *>(cell));
         cellController = tax;
+        break;
     }
     }
     ArgsForDefAct *args = cellController->getArgs(players[playerTurn], this, plrCntl);
-    std::cout<<"cweweco8899999999999999999\n";
     cellController->defaultAction(args);
-    std::cout<<"";
-    displayMenu();
-
+    std::cout << "";
     int decision;
+    displayMenu();
     std::cin >> decision;
-    caseMapToAction(decision, players[playerTurn], plrCntl, pc);
-    // nextPlayer();
+    while (decision != 4)
+    {
+        caseMapToAction(decision, players[playerTurn], plrCntl, pc);
+        if(decision == 3){
+            break;
+        }
+        displayMenu();
+        std::cin >> decision;
+    }
+    renderEndTurn(players[playerTurn]);
+    nextPlayer();
 }
 
 int Game::getBoardSize()

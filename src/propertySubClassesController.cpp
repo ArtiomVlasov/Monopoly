@@ -24,7 +24,9 @@ int StreetController::handleStreetType(Street::Color color){
     }
 }
 
-StreetController::StreetController(Street *street):PropertyController(street){}
+StreetController::StreetController(Street *street):PropertyController(street){
+    this->street = street;
+}
 
 bool StreetController::isFullListOfStreet(const Player *player, Street::Color color)
 {
@@ -67,7 +69,9 @@ int StreetController::getTotalRent(ArgsForDefAct *args)
     return baseRent * (1 + street->getLevelOfStreet()); // Рента увеличивается с уровнем застройки
 }
 
-RailwayController::RailwayController(Railway *railway):PropertyController(railway){}
+RailwayController::RailwayController(Railway *railway):PropertyController(railway){
+    this->railway = railway;
+}
 
 int RailwayController::getTotalRent(ArgsForDefAct *args)
 {
@@ -76,7 +80,9 @@ int RailwayController::getTotalRent(ArgsForDefAct *args)
     return baseRent * ownedStations;
 }
 
-UtilitiesController::UtilitiesController(Utilities *utilities):PropertyController(utilities){}
+UtilitiesController::UtilitiesController(Utilities *utilities):PropertyController(utilities){
+    this->utilities = utilities;
+}
 
 int UtilitiesController::getTotalRent(ArgsForDefAct *args){
     int diceRoll = args->game->getRollDice();
